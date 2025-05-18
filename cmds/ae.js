@@ -1,5 +1,3 @@
-Enlève le fonction
-
 const axios = require("axios");
 
 const fonts = {
@@ -30,7 +28,8 @@ module.exports = {
         const prompt = args.join(" ");
         
         if (!prompt) return api.sendMessage(applyFont("[📑] (๑•̀ㅁ•́ฅ✧ 𝗬𝗢𝗢 ?? 🪐."), threadID);
-
+        const loadingMsg = await api.sendMessage(applyFont("(๑·`▱´·๑)"), threadID);
+            
         try {
             const apiUrl = `https://sandipbaruwal.onrender.com/gemini?prompt=${encodeURIComponent(RP + " : " + prompt)}`;
             
