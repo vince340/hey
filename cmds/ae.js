@@ -31,12 +31,13 @@ module.exports = {
         const loadingMsg = await api.sendMessage(applyFont("(๑·`▱´·๑)"), threadID);
             
         try {
-            const apiUrl = `https://sandipbaruwal.onrender.com/gemini?prompt=${encodeURIComponent(RP + " : " + prompt)}`;
+            const apiUrl = `https://vapis.my.id/api/openai?q=${encodeURIComponent(RP + " : " + prompt)}`;
             
             const { data } = await axios.get(apiUrl);
-            const response = data?.answer || data?.description || data?.reponse || data;
+            const response = data?.result || data?.description || data?.reponse || data;
             
             if (response) {
+                await api.unsendMessage(loadingMsg.messageID);
                 const styledResponse = applyFont(response.toString());
                 return api.sendMessage(`${styledResponse} 🪐`, threadID, loadingMsg.messageID);
             }
