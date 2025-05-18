@@ -1,3 +1,5 @@
+Enlève le fonction
+
 const axios = require("axios");
 
 const fonts = {
@@ -27,10 +29,9 @@ module.exports = {
         const { threadID } = event;
         const prompt = args.join(" ");
         
-        if (!prompt) return api.sendMessage(applyFont("[📑] ᗩEᔕTᕼEᖇ :\n\n(๑•̀ㅁ•́ฅ✧ 𝗬𝗢𝗢 ?? 🪐."), threadID);
+        if (!prompt) return api.sendMessage(applyFont("[📑] (๑•̀ㅁ•́ฅ✧ 𝗬𝗢𝗢 ?? 🪐."), threadID);
 
         try {
-            const loadingMsg = await api.sendMessage("🔵⚪🔴.... ", threadID);
             const apiUrl = `https://sandipbaruwal.onrender.com/gemini?prompt=${encodeURIComponent(RP + " : " + prompt)}`;
             
             const { data } = await axios.get(apiUrl);
@@ -47,4 +48,4 @@ module.exports = {
             return api.sendMessage(applyFont("❌ Erreur de connexion avec l'API Gemini."), threadID);
         }
     }
-};
+}; 
