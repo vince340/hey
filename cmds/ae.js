@@ -26,7 +26,7 @@ module.exports = {
             const loadingMsg = await api.sendMessage("🔵⚪🔴.... ", threadID);
 
             const response = await axios.get(apiUrl);
-            const description = response?.data?.answer?.description;
+            const description = response?.answer?.description;
 
             if (description) {
                 return api.sendMessage(`${description} 🪐`, threadID, loadingMsg.messageID);
