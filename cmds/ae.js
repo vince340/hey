@@ -20,13 +20,16 @@ module.exports = {
             const loadingMsg = await api.sendMessage("🔵⚪🔴.... ", threadID);
             const apiUrl = `https://sandipbaruwal.onrender.com/gemini?prompt=${encodeURIComponent(prompt)}`;
             const response = await axios.get(apiUrl);
-            const description = response?.answer;
+
+            // Gestion des deux formats de réponse
+            const answer = response?.answer;
+            const description = typeof answer === 'string' ? answer : answer?.description;
 
             if (description) {
                 return api.sendMessage(`${description} 🪐`, threadID, loadingMsg.messageID);
             }
 
-            return api.sendMessage("⚠️ Aucune réponse trouvée.", threadID, loadingMsg.messageID);
+            return api.sendMessage("⚠️ Aucune réponse valide reçue de l'API.", threadID, loadingMsg.messageID);
         } catch (error) {
             console.error("❌ Erreur Gemini:", error);
             return api.sendMessage("❌ Erreur lors de la connexion à l'API Gemini.", event.threadID);
