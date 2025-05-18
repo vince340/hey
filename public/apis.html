@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Panel</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6067029417509870"
+        crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0f172a;
+            color: #fff;
+            min-height: 100vh;
+            padding-top: 60px;
+        }
+        .navbar {
+            width: 100%;
+            background: #1e293b;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .navbar a:hover {
+            background: #334155;
+        }
+        .menu {
+            display: flex;
+            gap: 20px;
+        }
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 26px;
+            background: none;
+            border: none;
+            color: white;
+        }
+        h1 {
+            text-align: center;
+            margin: 20px 0 30px;
+            font-size: 28px;
+        }
+        #apiList {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 0 20px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .api-container {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            word-wrap: break-word;
+        }
+        .api-container h2 {
+            margin-bottom: 10px;
+            font-size: 20px;
+            color: #facc15;
+        }
+        .api-info {
+            font-size: 14px;
+            color: #cbd5e1;
+            margin-bottom: 5px;
+        }
+        .try-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #2a9d8f, #20b2aa);
+            border-radius: 6px;
+            margin-top: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s, background 0.3s, box-shadow 0.2s;
+        }
+        .try-btn:hover {
+            background: linear-gradient(135deg, #21867a, #178f8f);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.25);
+        }
+        @media screen and (max-width: 768px) {
+            .menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: #1e293b;
+                text-align: center;
+                padding: 10px 0;
+            }
+            .menu a {
+                padding: 10px;
+                display: block;
+            }
+            .hamburger {
+                display: block;
+            }
+            .show-menu {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <strong>API Panel</strong>
+        <button class="hamburger" onclick="toggleMenu()">☰</button>
+        <div class="menu" id="menu">
+            <a href="/index.html">AutoBot</a>
+            <a href="/apis.html">APIs</a>
+        </div>
+    </div>
+
+    <h1>Available API Endpoints</h1>
+    <div id="apiList"></div>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById("menu").classList.toggle("show-menu");
+        }
+
+        async function loadAPIs() {
+            try {
+                const response = await fetch('/api/list');
+                const commands = await response.json();
+                const apiList = document.getElementById('apiList');
+                apiList.innerHTML = '';
+
+                commands.forEach(cmd => {
+                    const apiBlock = `
+                        <div class="api-container">
+                            <h2>${cmd.name}</h2>
+                            <p class="api-info"><strong>Route:</strong> ${cmd.route}</p>
+                            <p class="api-info"><strong>Method:</strong> ${cmd.method.toUpperCase()}</p>
+                            <p class="api-info"><strong>Usage:</strong> ${cmd.usage}</p>
+                            <a href="${cmd.usage}" target="_blank" class="try-btn">Try API</a>
+                        </div>`;
+                    apiList.innerHTML += apiBlock;
+                });
+            } catch (error) {
+                console.error("Failed to load APIs:", error);
+            }
+        }
+
+        loadAPIs();
+    </script>
+
+</body>
+</html>
