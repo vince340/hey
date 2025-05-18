@@ -1,5 +1,3 @@
-Enlève le fonction
-
 const axios = require("axios");
 
 const fonts = {
@@ -18,7 +16,7 @@ function applyFont(text) {
 }
 
 module.exports = {
-    name: "ae",
+    name: "ai",
     usePrefix: false,
     usage: "ai <question>",
     version: "1.3",
@@ -26,26 +24,30 @@ module.exports = {
     cooldown: 2,
 
     execute: async ({ api, event, args }) => {
-        const { threadID } = event;
+        const { threadID, messageID } = event;
         const prompt = args.join(" ");
         
-        if (!prompt) return api.sendMessage(applyFont("😒 🪐"), threadID);
+        if (!prompt) return api.sendMessage(applyFont("[📑] (๑•̀ㅁ•́ฅ✧ 𝗬𝗢𝗢 ?? 🪐."), threadID, messageID);
 
         try {
-            const apiUrl = `https://sandipbaruwal.onrender.com/gemini?prompt=${encodeURIComponent(RP + " : " + prompt)}`;
+            const loadingMsg = await api.sendMessage(applyFont("(๑•̀ㅁ•́ฅ✧ 𝗧𝗵𝗲 𝗚𝗼𝗱𝗱𝗲𝘀𝘀 𝗔𝗲𝘀𝘁𝗵𝗲𝗿 𝘁𝗿𝗮𝘃𝗮𝗶𝗹𝗹𝗲 𝘀𝘂𝗿 𝘁𝗮 𝗿𝗲́𝗽𝗼𝗻𝘀𝗲... 🪐"), threadID);
             
+            const apiUrl = `https://sandipbaruwal.onrender.com/gemini?prompt=${encodeURIComponent(RP + " : " + prompt)}`;
             const { data } = await axios.get(apiUrl);
             const response = data?.answer || data?.description || data?.reponse || data;
             
             if (response) {
                 const styledResponse = applyFont(response.toString());
-                return api.sendMessage(`${styledResponse} 🪐`, threadID, loadingMsg.messageID);
+                await api.unsendMessage(loadingMsg.messageID); // Supprime le message de loading
+                return api.sendMessage(`${styledResponse} 🪐`, threadID, messageID);
             }
             
-            return api.sendMessage(applyFont("⚠️ L'API n'a pas retourné de réponse valide."), threadID, loadingMsg.messageID);
+            await api.unsendMessage(loadingMsg.messageID); // Supprime le message de loading en cas d'erreur
+            return api.sendMessage(applyFont("⚠️ L'API n'a pas retourné de réponse valide."), threadID, messageID);
         } catch (error) {
             console.error("Erreur Gemini:", error);
-            return api.sendMessage(applyFont("❌ Erreur de connexion avec l'API Gemini."), threadID);
+            if (loadingMsg) await api.unsendMessage(loadingMsg.messageID); // Supprime le message de loading si une erreur survient
+            return api.sendMessage(applyFont("❌ Erreur de connexion avec l'API Gemini."), threadID, messageID);
         }
     }
-}; 
+};
