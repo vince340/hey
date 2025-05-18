@@ -1,3 +1,4 @@
+Comme ça est ce que ça marche :
 const axios = require('axios');
 
 const fonts = {
@@ -9,40 +10,37 @@ const fonts = {
     S: "𝗦", T: "𝗧", U: "𝗨", V: "𝗩", W: "𝗪", X: "𝗫", Y: "𝗬", Z: "𝗭",
 };
 
-module.exports.config = {
-    name: 'ai',
-    version: '2',
-    role: 0,
-    hasPrefix: false,
-    aliases: ["12"],
-    description: "Command for AI-generated responses styled with special fonts and emojis.",
-    usage: "ex : ai [prompt]",
-    credits: 'aesther',
-    cooldown: 1,
-};
+module.exports = {
+    name: "ai",
+    usePrefix: false,
+    usage: "ai <your question> | <reply to an image>",
+    version: "1.2",
+    admin: false,
+    cooldown: 2,
 
-module.exports.run = async function({ api, event, args }) {
-    const input = args.join(' ');
-    
-    if (!input) {
-        api.sendMessage('[📑] ᗩEᔕTᕼEᖇ :\n\n(๑•̀ㅁ•́ฅ✧ 𝗬𝗢𝗢 ?? .', event.threadID, event.messageID);
-        api.setMessageReaction("🌷", event.messageID, () => {}, true);
-        return;
+    execute: async function({ api, event, args }) {
+        const input = args.join(' ');
+        
+        if (!input) {
+            api.sendMessage('[📑] ᗩEᔕTᕼEᖇ :\n\n(๑•̀ㅁ•́ฅ✧ 𝗬𝗢𝗢 ?? .', event.threadID, event.messageID);
+            api.setMessageReaction("🌷", event.messageID, () => {}, true);
+            return;
+        }
+        
+        try {
+            const RolePlay = "quand tu répond à cette question ajoutes des emojis convenable :\n\n";
+            const { data } = await axios.get(`https://sandipbaruwal.onrender.com/gemini?prompt=${encodeURIComponent(RolePlay + input)}`);
+            let response = data.answer;
+            
+            // Replace characters with stylized characters from fonts
+            response = response.split('').map(char => fonts[char] || char).join('');
+            
+            api.sendMessage({ body: `[📑] ᗩEᔕTᕼEᖇ :\n\n${response}` }, event.threadID, event.messageID);
+            api.setMessageReaction("🌸", event.messageID, () => {}, true);
+            
+        } catch (error) {
+            console.error('Error:', error);
+            api.sendMessage({ body: '⚠️ Error Loading ⚠️' }, event.threadID, event.messageID);
+        }
     }
-    
-    try {
-        const RolePlay = "quand tu répond à cette question ajoutes des emojis convenable :\n\n";
-        const { data } = await axios.get(`https://sandipbaruwal.onrender.com/gemini?prompt=${encodeURIComponent(RolePlay + input)}`);
-        let response = data.data.answer;
-        
-        // Replace characters with stylized characters from fonts
-        response = response.split('').map(char => fonts[char] || char).join('');
-        
-        api.sendMessage({ body: `${response}` }, event.threadID, event.messageID);
-        api.setMessageReaction("🌸", event.messageID, () => {}, true);
-        
-    } catch (error) {
-        console.error('Error:', error);
-        api.sendMessage({ body: '⚠️ Error Loading ⚠️' }, event.threadID, event.messageID);
-    }
-};
+}; 
