@@ -3,7 +3,7 @@ const axios = require("axios");
 module.exports = {
     name: "ai",
     usePrefix: false,
-    usage: "ai <your question> | <reply to an image>",
+    usage: "ai <your question>",
     version: "1.2",
     admin: false,
     cooldown: 2,
@@ -11,31 +11,25 @@ module.exports = {
     execute: async ({ api, event, args }) => {
         try {
             const { threadID } = event;
-            let prompt = args.join(" ");
-            let imageUrl = null;
-            let apiUrl = `https://sandipbaruwal.onrender.com/gemini?prompt=${encodeURIComponent(prompt)}`;
-
-            if (event.messageReply && event.messageReply.attachments.length > 0) {
-                const attachment = event.messageReply.attachments[0];
-                if (attachment.type === "photo") {
-                    imageUrl = attachment.url;
-                    apiUrl += `&imagurl=${encodeURIComponent(imageUrl)}`;
-                }
+            const prompt = args.join(" ");
+            
+            if (!prompt) {
+                return api.sendMessage("Veuillez poser une question.", threadID);
             }
 
             const loadingMsg = await api.sendMessage("🔵⚪🔴.... ", threadID);
-
+            const apiUrl = `https://sandipbaruwal.onrender.com/gemini?prompt=${encodeURIComponent(prompt)}`;
             const response = await axios.get(apiUrl);
-            const description = response?.answer?.description;
+            const description = response?.answer;
 
             if (description) {
                 return api.sendMessage(`${description} 🪐`, threadID, loadingMsg.messageID);
             }
 
-            return api.sendMessage("⚠️ No description found in response.", threadID, loadingMsg.messageID);
+            return api.sendMessage("⚠️ Aucune réponse trouvée.", threadID, loadingMsg.messageID);
         } catch (error) {
-            console.error("❌ Gemini Error:", error);
-            return api.sendMessage("❌ Error while contacting Gemini API.", event.threadID);
+            console.error("❌ Erreur Gemini:", error);
+            return api.sendMessage("❌ Erreur lors de la connexion à l'API Gemini.", event.threadID);
         }
     }
 };
