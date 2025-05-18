@@ -16,7 +16,7 @@ function applyFont(text) {
 }
 
 module.exports = {
-    name: "ai",
+    name: "ae",
     usePrefix: false,
     usage: "ai <question>",
     version: "1.3",
@@ -27,10 +27,10 @@ module.exports = {
         const { threadID, messageID } = event;
         const prompt = args.join(" ");
         
-        if (!prompt) return api.sendMessage(applyFont("[📑] (๑•̀ㅁ•́ฅ✧ 𝗬𝗢𝗢 ?? 🪐."), threadID, messageID);
+        if (!prompt) return api.sendMessage(applyFont("😒🪐"), threadID, messageID);
 
         try {
-            const loadingMsg = await api.sendMessage(applyFont("(๑•̀ㅁ•́ฅ✧ 𝗧𝗵𝗲 𝗚𝗼𝗱𝗱𝗲𝘀𝘀 𝗔𝗲𝘀𝘁𝗵𝗲𝗿 𝘁𝗿𝗮𝘃𝗮𝗶𝗹𝗹𝗲 𝘀𝘂𝗿 𝘁𝗮 𝗿𝗲́𝗽𝗼𝗻𝘀𝗲... 🪐"), threadID);
+            const loadingMsg = await api.sendMessage(applyFont("(๑·`▱´·๑)"), threadID);
             
             const apiUrl = `https://sandipbaruwal.onrender.com/gemini?prompt=${encodeURIComponent(RP + " : " + prompt)}`;
             const { data } = await axios.get(apiUrl);
