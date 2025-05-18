@@ -19,7 +19,7 @@ module.exports = {
                     ];
 
                     const message = {
-                        body: `(⁎⁍̴̀﹃ ⁍̴́⁎)♡ 𝗛i ‼️‼️\n∅ @${userName}`,
+                        body: `(⁎⁍̴̀﹃ ⁍̴́⁎)♡ 𝗛i ‼️‼️\n\n∅@${userName}`,
                         mentions
                     };
 
