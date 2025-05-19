@@ -9,6 +9,13 @@ const fonts = {
     S: "𝗦", T: "𝗧", U: "𝗨", V: "𝗩", W: "𝗪", X: "𝗫", Y: "𝗬", Z: "𝗭"
 };
 
+const stickers = [
+  "254594546003916", "254595732670464", "254593389337365",
+  "37117808696806", "254597316003639", "254598806003490",
+  "254596219337082", "2379537642070973", "2379545095403561",
+  "2379551785402892", "254597059336998"
+];
+
 const RP = "Répond et ajoute des Emoji convenables";
 
 function applyFont(text) {
@@ -28,8 +35,13 @@ module.exports = {
         const { threadID } = event;
         const prompt = args.join(" ");
         
-        if (!prompt) return api.sendMessage(applyFont("[📑] (๑•̀ㅁ•́ฅ✧ 𝗬𝗢𝗢 ?? 🪐"), threadID);
-        const loadingMsg = await api.sendMessage(applyFont("(⁎⁍̴̀﹃ ⁍̴́⁎)♡......"), threadID);
+        if (!prompt) {
+            const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
+            await api.sendMessage({ sticker: randomSticker }, threadID);
+            return;
+        }
+        
+        const loadingMsg = await api.sendMessage(applyFont(""), threadID);
             
         try {
             const apiUrl = `https://vapis.my.id/api/openai?q=${encodeURIComponent(RP + " : " + prompt)}`;
@@ -40,13 +52,15 @@ module.exports = {
             if (response) {
                 await api.unsendMessage(loadingMsg.messageID);
                 const styledResponse = applyFont(response.toString());
-                return api.sendMessage(`${styledResponse} 🪐`, threadID, loadingMsg.messageID);
+                await api.sendMessage(`${styledResponse} 🪐`, threadID);
+                api.setMessageReaction("🪐", event.messageID, () => {}, true);
+                return;
             }
             
-            return api.sendMessage(applyFont("⚠️ L'API n'a pas retourné de réponse valide."), threadID, loadingMsg.messageID);
+            await api.sendMessage(applyFont("⚠️ L'API n'a pas retourné de réponse valide."), threadID);
         } catch (error) {
             console.error("Erreur Gemini:", error);
-            return api.sendMessage(applyFont("❌ Erreur de connexion avec l'API Gemini."), threadID);
+            await api.sendMessage(applyFont("❌ Erreur de connexion avec l'API Gemini."), threadID);
         }
     }
-}; 
+};
