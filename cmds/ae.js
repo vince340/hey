@@ -20,6 +20,7 @@ module.exports = {
     usePrefix: false,
     usage: "ai <question>",
     version: "1.3",
+    author:"Aesther", 
     admin: false,
     cooldown: 2,
 
@@ -27,8 +28,8 @@ module.exports = {
         const { threadID } = event;
         const prompt = args.join(" ");
         
-        if (!prompt) return api.sendMessage(applyFont("[📑] (๑•̀ㅁ•́ฅ✧ 𝗬𝗢𝗢 ?? 🪐."), threadID);
-        const loadingMsg = await api.sendMessage(applyFont("(๑·`▱´·๑)"), threadID);
+        if (!prompt) return api.sendMessage(applyFont("[📑] (๑•̀ㅁ•́ฅ✧ 𝗬𝗢𝗢 ?? 🪐"), threadID);
+        const loadingMsg = await api.sendMessage(applyFont("(⁎⁍̴̀﹃ ⁍̴́⁎)♡......"), threadID);
             
         try {
             const apiUrl = `https://vapis.my.id/api/openai?q=${encodeURIComponent(RP + " : " + prompt)}`;
