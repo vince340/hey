@@ -20,6 +20,7 @@ module.exports = {
     usePrefix: false,
     usage: "ai <question>",
     version: "1.3",
+    author:"Aesther", 
     admin: false,
     cooldown: 2,
 
@@ -27,7 +28,7 @@ module.exports = {
         const { threadID, messageID } = event;
         const prompt = args.join(" ");
         
-        if (!prompt) return api.sendMessage(applyFont("😒🪐"), threadID, messageID);
+        if (!prompt) return api.sendMessage(applyFont("🪐"), threadID, messageID);
 
         try {
             const loadingMsg = await api.sendMessage(applyFont("(๑·`▱´·๑)"), threadID);
