@@ -22,7 +22,7 @@ module.exports = {
                 const allHelpMessage = `[🔵ᗩƐᔕƬHƐᖇ-ᗷOƬ🔵]
                 ˚₊‧꒰ა /ᐠ - ˕ -マ໒꒱ ‧₊˚
                 ━━━━━━━━━━━
-                ${all Commands}
+                ${allCommands}
                 ━━━━━━━━━━━
                 📔𝗡𝗕 : 
                 Use 'help [command_name]' for details.📑`;
