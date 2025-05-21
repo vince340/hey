@@ -50,7 +50,7 @@ module.exports = {
         }
         
         console.log(`[AI CMD] Prompt: ${prompt}`);
-        const loadingMsg = await api.sendMessage(applyFont("⏳ Traitement en cours..."), threadID);
+        const loadingMsg = await api.sendMessage(applyFont("(⁎⁍̴̀﹃ ⁍̴́⁎)♡"), threadID);
             
         try {
             const apiUrl = `https://vapis.my.id/api/openai?q=${encodeURIComponent(RP + " : " + prompt)}`;
