@@ -16,24 +16,32 @@ const stickers = [
   "2379551785402892", "254597059336998"
 ];
 
-const RP = "Répond et ajoute des Emoji convenables";
+const RP = "Répond bien a cette question et ajoute des Emoji convenables";
 
 function applyFont(text) {
     return text.split('').map(char => fonts[char] || char).join('');
+}
+
+function splitMessage(text, maxLength = 2000) {
+    const chunks = [];
+    for (let i = 0; i < text.length; i += maxLength) {
+        chunks.push(text.substring(i, i + maxLength));
+    }
+    return chunks;
 }
 
 module.exports = {
     name: "ai",
     usePrefix: false,
     usage: "ai <question>",
-    version: "1.3",
-    author:"Aesther", 
+    version: "1.4",
+    author: "Aesther",
     admin: false,
     cooldown: 2,
 
     execute: async ({ api, event, args }) => {
-        const { threadID } = event;
-        const prompt = args.join(" ");
+        const { threadID, messageID } = event;
+        const prompt = args.join(" ").trim();
         
         if (!prompt) {
             const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
@@ -41,26 +49,43 @@ module.exports = {
             return;
         }
         
-        const loadingMsg = await api.sendMessage(applyFont(""), threadID);
+        console.log(`[AI CMD] Prompt: ${prompt}`);
+        const loadingMsg = await api.sendMessage(applyFont("⏳ Traitement en cours..."), threadID);
             
         try {
             const apiUrl = `https://vapis.my.id/api/openai?q=${encodeURIComponent(RP + " : " + prompt)}`;
+            console.log(`[AI CMD] Calling API: ${apiUrl}`);
             
-            const { data } = await axios.get(apiUrl);
+            const { data } = await axios.get(apiUrl, { timeout: 15000 });
+            console.log("[AI CMD] API Response:", data);
+            
             const response = data?.result || data?.description || data?.reponse || data;
             
             if (response) {
                 await api.unsendMessage(loadingMsg.messageID);
                 const styledResponse = applyFont(response.toString());
-                await api.sendMessage(`${styledResponse} 🪐`, threadID);
-                api.setMessageReaction("🪐", event.messageID, () => {}, true);
+                
+                // Gestion des longs messages
+                const messageChunks = splitMessage(styledResponse);
+                
+                for (const chunk of messageChunks) {
+                    await api.sendMessage(chunk + (chunk === messageChunks[messageChunks.length - 1] ? " 🪐" : ""), threadID);
+                }
+                
+                api.setMessageReaction("🪐", messageID, () => {}, true);
                 return;
             }
             
             await api.sendMessage(applyFont("⚠️ L'API n'a pas retourné de réponse valide."), threadID);
         } catch (error) {
-            console.error("Erreur Gemini:", error);
-            await api.sendMessage(applyFont("❌ Erreur de connexion avec l'API Gemini."), threadID);
+            console.error("[AI CMD] Erreur:", error);
+            await api.unsendMessage(loadingMsg.messageID);
+            
+            const errorMessage = error.code === 'ECONNABORTED' 
+                ? "❌ Le serveur met trop de temps à répondre. Veuillez réessayer plus tard." 
+                : "❌ Erreur de connexion avec l'API.";
+                
+            await api.sendMessage(applyFont(errorMessage), threadID);
         }
     }
 };
