@@ -1,11 +1,12 @@
 const fs = require("fs");
 
 module.exports = {
-    name: "report",
+    name: "callad",
     usePrefix: false,
     description: "Send a message to the bot owner.",
     usage: "report <your message>",
     version: "1.2",
+    author:"aesther", 
     admin: false,
     cooldown: 10,
 
