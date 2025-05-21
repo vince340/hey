@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 module.exports = {
-    name: "callad",
+    name: "notification",
     usePrefix: false,
     usage: "notify <message to announce>",
     version: "1.0",
