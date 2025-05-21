@@ -22,11 +22,10 @@ module.exports = {
                 const allHelpMessage = `[🔵ᗩƐᔕƬHƐᖇ-ᗷOƬ🔵]
                 ˚₊‧꒰ა /ᐠ - ˕ -マ໒꒱ ‧₊˚
                 ━━━━━━━━━━━
-                
-${all Commands}
-  ━━━━━━━━━━━
-📔𝗡𝗕 : 
-Use 'help [command_name]' for details.📑`;
+                ${all Commands}
+                ━━━━━━━━━━━
+                📔𝗡𝗕 : 
+                Use 'help [command_name]' for details.📑`;
 
                 return api.sendMessage(allHelpMessage, threadID, messageID);
             }
