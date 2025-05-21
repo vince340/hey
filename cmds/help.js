@@ -19,8 +19,13 @@ module.exports = {
                     .map((cmd, index) => `∅ ${cmd.name} (${cmd.usePrefix ? "uses prefix" : "no prefix"})\n   Usage: ${cmd.usage} 🌸`)
                     .join("\n\n");
 
-                const allHelpMessage = `[🔵ᗩƐᔕƬHƐᖇ-ᗷOƬ🔵]\n  ˚₊‧꒰ა /ᐠ - ˕ -マ໒꒱ ‧₊˚ \n━━━━━━━━━━━ \n
-${all Commands} \n━━━━━━━━━━━ \n📔𝗡𝗕 : 
+                const allHelpMessage = `[🔵ᗩƐᔕƬHƐᖇ-ᗷOƬ🔵]
+                ˚₊‧꒰ა /ᐠ - ˕ -マ໒꒱ ‧₊˚
+                ━━━━━━━━━━━
+                
+${all Commands}
+  ━━━━━━━━━━━
+📔𝗡𝗕 : 
 Use 'help [command_name]' for details.📑`;
 
                 return api.sendMessage(allHelpMessage, threadID, messageID);
@@ -55,7 +60,9 @@ Use 'help [command_name]' for details.📑`;
             .join("\n\n");
 
         const helpMessage = `
-[🔵ᗩƐᔕƬHƐᖇ-ᗷOƬ🔵]\n  ˚₊‧꒰ა /ᐠ - ˕ -マ໒꒱ ‧₊˚ \n━━━━━━━━━━━\n
+[🔵ᗩƐᔕƬHƐᖇ-ᗷOƬ🔵]
+˚₊‧꒰ა /ᐠ - ˕ -マ໒꒱ ‧₊˚ 
+━━━━━━━━━━━
 ${commandArray}
 ━━━━━━━━━━━
 📑𝗨𝘀𝗲 'help all'
