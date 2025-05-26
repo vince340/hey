@@ -20,12 +20,12 @@ module.exports = {
                     .join("\n\n");
 
                 const allHelpMessage = `[🔵ᗩƐᔕƬHƐᖇ-ᗷOƬ🔵]
-                ˚₊‧꒰ა /ᐠ - ˕ -マ໒꒱ ‧₊˚
-                ━━━━━━━━━━━
-                ${allCommands}
-                ━━━━━━━━━━━
-                📔𝗡𝗕 : 
-                Use 'help [command_name]' for details.📑`;
+    ˚₊‧꒰ა /ᐠ - ˕ -マ໒꒱ ‧₊˚
+    ━━━━━━━━━━━
+    ${allCommands}
+    ━━━━━━━━━━━
+    📔𝗡𝗕 : 
+    Use 'help [command_name]' for details.📑`;
 
                 return api.sendMessage(allHelpMessage, threadID, messageID);
             }
