@@ -34,10 +34,10 @@ module.exports = {
             api.setMessageReaction("⏳", messageID, () => {}, true);
 
             // API Pinterest alternative
-            const apiUrl = `https://api.pinterest.com/v3/pidgets/boards/${encodeURIComponent(searchQuery)}/pins/`;
+            const apiUrl = `https://api.nekorinn.my.id/search/pinterest?q=${encodeURIComponent(searchQuery)}/pins/`;
             
             // Solution de repli si l'API principale ne fonctionne pas
-            const fallbackApiUrl = `https://kaiz-apis.gleeze.com/api/pinterest?=${encodeURIComponent(searchQuery)}&apikey=2f858a4e-204d-47b1-829a-36147e539cbf&count=${count}`;
+            const fallbackApiUrl = `https://api.nekorinn.my.id/search/pinterest?q=${encodeURIComponent(searchQuery)}&count=${count}`;
 
             let response;
             try {
