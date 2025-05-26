@@ -53,13 +53,13 @@ module.exports = {
         const loadingMsg = await api.sendMessage(applyFont("(⁎⁍̴̀﹃ ⁍̴́⁎)♡"), threadID);
             
         try {
-            const apiUrl = `https://vapis.my.id/api/openai?q=${encodeURIComponent(RP + " : " + prompt)}`;
+            const apiUrl = `https://apis.davidcyriltech.my.id/ai/gpt4?text=${encodeURIComponent(RP + " : " + prompt)}`;
             console.log(`[AI CMD] Calling API: ${apiUrl}`);
             
             const { data } = await axios.get(apiUrl, { timeout: 15000 });
             console.log("[AI CMD] API Response:", data);
             
-            const response = data?.result || data?.description || data?.reponse || data;
+            const response = data?.message || data?.description || data?.reponse || data;
             
             if (response) {
                 await api.unsendMessage(loadingMsg.messageID);
