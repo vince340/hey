@@ -2,7 +2,7 @@ const axios = require('axios');
 
 module.exports = {
     name: "waifu",
-    usePrefix: true,
+    usePrefix: false,
     usage: "waifu <catégorie>",
     description: "Envoie une image waifu de la catégorie demandée",
     async execute({ api, event, args }) {
