@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
     name: "google",
     usePrefix: false,
-    author:"aesther",
+    author: "aesther",
     usage: "𝗚𝗢𝗢𝗚𝗟𝗘 <recherche> [nombre d'images]",
     description: "Récupère des images depuis l'API Pinterest de David Cyril",
     async execute({ api, event, args }) {
@@ -28,23 +28,23 @@ module.exports = {
         try {
             api.setMessageReaction("🔎", messageID, () => {}, true);
 
-            // Appel à l'API avec la structure JSON spécifiée
+            // Appel à l'API
             const apiUrl = `https://apis.davidcyriltech.my.id/googleimage?query=${encodeURIComponent(searchQuery)}`;
-            
             const { data } = await axios.get(apiUrl, { timeout: 10000 });
 
-            // Vérification de la structure de réponse
             if (!data.success || !data.results || data.results.length === 0) {
                 return api.sendMessage("❌ Aucun résultat trouvé ou erreur de l'API", threadID, messageID);
             }
 
             const images = data.results.slice(0, count);
+            const tempFiles = [];
+            const attachments = [];
 
-            // Envoi des images
-            for (let i = 0; i < images.length; i++) {
+            // Téléchargement de toutes les images en parallèle
+            await Promise.all(images.map(async (imageUrl, i) => {
                 try {
-                    const imageUrl = images[i];
-                    const tempPath = path.join(__dirname, `pinterest_${i}.jpg`);
+                    const tempPath = path.join(__dirname, `google_${i}.jpg`);
+                    tempFiles.push(tempPath);
 
                     const response = await axios({
                         url: imageUrl,
@@ -58,19 +58,32 @@ module.exports = {
                             .on('error', reject);
                     });
 
-                    await api.sendMessage({
-                        body: i === 0 ? `📌 Résultats pour "${searchQuery}" (${i+1}/${images.length})` : `(${i+1}/${images.length})`,
-                        attachment: fs.createReadStream(tempPath)
-                    }, threadID);
-
-                    fs.unlinkSync(tempPath);
-                    
+                    attachments.push(fs.createReadStream(tempPath));
                 } catch (error) {
                     console.error(`Erreur avec l'image ${i+1}:`, error);
                 }
+            }));
+
+            if (attachments.length === 0) {
+                return api.sendMessage("❌ Aucune image n'a pu être téléchargée", threadID, messageID);
             }
 
-            api.setMessageReaction("✅", messageID, () => {}, true);
+            // Envoi de toutes les images en une seule fois
+            await api.sendMessage({
+                body: `📌 𝗥𝗘𝗦𝗨𝗧𝗔𝗧 : \n\n"${searchQuery}" (${attachments.length} images)`,
+                attachment: attachments
+            }, threadID);
+
+            // Nettoyage des fichiers temporaires
+            tempFiles.forEach(file => {
+                try {
+                    fs.unlinkSync(file);
+                } catch (err) {
+                    console.error(`Erreur suppression ${file}:`, err);
+                }
+            });
+
+            api.setMessageReaction("💯", messageID, () => {}, true);
 
         } catch (error) {
             console.error('Erreur principale:', error);
