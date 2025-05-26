@@ -23,7 +23,7 @@ module.exports = {
         }
 
         const imageUrl = attachment.url;
-        const apiUrl = `https://apis.davidcyriltech.my.id/removebg?url=${encodeURIComponent(imageUrl)}`;
+        const apiUrl = `https://api.diioffc.web.id/api/tools/remini?url=${encodeURIComponent(imageUrl)}`;
 
         try {
             api.sendMessage("⏳ (⁎⁍̴̀﹃ ⁍̴́⁎)", threadID);
@@ -39,7 +39,7 @@ module.exports = {
             const tempDir = path.join(__dirname, "..", "temp");
             if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
 
-            const tempPath = path.join(tempDir, `removedbg_${Date.now()}.png`);
+            const tempPath = path.join(tempDir, `removedbg_${Date.now()}.jpg`);
             fs.writeFileSync(tempPath, Buffer.from(imageRes.data, "binary"));
 
             api.sendMessage(
