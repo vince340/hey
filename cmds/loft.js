@@ -22,7 +22,7 @@ module.exports = {
         en: {
             turnedOn: '✅ | Loft AI activé avec succès!',
             turnedOff: '✅ | Loft AI désactivé avec succès!',
-            error: '😰 - Désolé, je ne peux pas répondre pour le moment'
+            error: '😰 - THEA Vas punir si je répond à ça'
         }
     },
 
