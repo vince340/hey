@@ -4,7 +4,7 @@ const path = require("path");
 
 module.exports = {
     name: "pinterest",
-    usePrefix: true,
+    usePrefix: false,
     usage: "pinterest <recherche> [nombre d'images (1-10)]",
     version: "1.1",
     author:"aesther", 
