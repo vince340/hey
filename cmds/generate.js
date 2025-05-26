@@ -5,7 +5,7 @@ const path = require("path");
 module.exports = {
     name: "gen",
     usePrefix: false,
-    usage: "poli [prompt]",
+    usage: "gen [prompt]",
     version: "1.0",
     admin: false,
     author:"aesther", 
@@ -15,7 +15,7 @@ module.exports = {
         const { threadID, messageID } = event;
 
         if (!args[0]) {
-            return api.sendMessage("⚠️ Please provide a prompt.\nUsage: poli [prompt]", threadID, messageID);
+            return api.sendMessage("⚠️ 𝗣𝗥𝗢𝗠𝗣𝗧 ✖️✖️✖️.\nUsage: Gen [prompt]", threadID, messageID);
         }
 
         const prompt = args.join(" ");
@@ -23,7 +23,7 @@ module.exports = {
         const filePath = path.join(__dirname, "poli-image.jpg");
 
         try {
-            api.setMessageReaction("⏳", messageID, () => {}, true);
+            api.setMessageReaction("🌸", messageID, () => {}, true);
 
             const response = await axios({
                 url: apiUrl,
@@ -35,10 +35,10 @@ module.exports = {
             response.data.pipe(writer);
 
             writer.on("finish", () => {
-                api.setMessageReaction("✅", messageID, () => {}, true);
+                api.setMessageReaction("🌷", messageID, () => {}, true);
 
                 const msg = {
-                    body: `🖼️ Prompt: ${prompt}`,
+                    body: `🛄 𝗣𝗥𝗢𝗠𝗣𝗧 : ${prompt}`,
                     attachment: fs.createReadStream(filePath),
                 };
 
