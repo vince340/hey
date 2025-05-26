@@ -36,7 +36,7 @@ module.exports = {
         }
 
         const tagEveryone = {
-            body: "👋 Goodbye @everyone.",
+            body: "(๑·`▱´·๑) 𝗕𝗘𝗬 𝗕𝗘𝗬\n\nᐕ haaaaaaa ",
             mentions: [{
                 tag: "@everyone",
                 id: threadID
