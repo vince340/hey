@@ -1,37 +1,69 @@
-const axios = require('axios');
+const fs = require("fs");
+const axios = require("axios");
+const path = require("path");
 
 module.exports = {
     name: "hentai",
     usePrefix: false,
+    usage: "hentai",
+    version: "1.0",
+    admin: false,
     author:"aesther", 
-    description: "Envoie une image waifu aléatoire",
-    async execute({ api, event }) {
+    cooldown: 10,
+
+    execute: async ({ api, event, args }) => {
         const { threadID, messageID } = event;
+
+        if (!args[0]) {
+            return api.sendMessage("⚠️ Please provide a prompt.\nUsage: poli [prompt]", threadID, messageID);
+        }
+
+        const prompt = args.join(" ");
+        const apiUrl = `https://api.nekorinn.my.id/waifuim/hentai`;
+        const filePath = path.join(__dirname, "poli-image.jpg");
 
         try {
             api.setMessageReaction("⏳", messageID, () => {}, true);
 
-            // Appel à l'API waifu
-            const { data } = await axios.get('https://api.nekorinn.my.id/waifuim/hentai');
-            
-            if (!data || !data.url) {
-                return api.sendMessage(
-                    "❌ Impossible de récupérer l'image waifu",
-                    threadID, messageID
-                );
-            }
+            const response = await axios({
+                url: apiUrl,
+                method: "GET",
+                responseType: "stream"
+            });
 
-            api.sendMessage({
-                body: "🫠 𝗛𝗘𝗡𝗧𝗔𝗜 🔞",
-                attachment: await global.utils.getStreamFromURL(data.url)
-            }, threadID);
+            const writer = fs.createWriteStream(filePath);
+            response.data.pipe(writer);
 
-            api.setMessageReaction("✅", messageID, () => {}, true);
+            writer.on("finish", () => {
+                api.setMessageReaction("✅", messageID, () => {}, true);
+
+                const msg = {
+                    body: `🖼️ Prompt: ${prompt}`,
+                    attachment: fs.createReadStream(filePath),
+                };
+
+                api.sendMessage(msg, threadID, (err) => {
+                    if (err) {
+                        console.error("❌ Error sending image:", err);
+                        api.sendMessage("⚠️ Failed to send image.", threadID);
+                    }
+
+                    fs.unlink(filePath, (unlinkErr) => {
+                        if (unlinkErr) console.error("❌ Error deleting file:", unlinkErr);
+                    });
+                });
+            });
+
+            writer.on("error", (err) => {
+                console.error("❌ Error downloading image:", err);
+                api.setMessageReaction("❌", messageID, () => {}, true);
+                api.sendMessage("⚠️ Failed to download image.", threadID, messageID);
+            });
 
         } catch (error) {
-            console.error(error);
+            console.error("❌ API Error:", error);
             api.setMessageReaction("❌", messageID, () => {}, true);
-            api.sendMessage("⚠️ Erreur lors de la récupération de l'image waifu", threadID, messageID);
+            api.sendMessage("⚠️ An error occurred while generating the image.", threadID, messageID);
         }
-    }
+    },
 };
