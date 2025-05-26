@@ -15,7 +15,7 @@ module.exports = {
         const { threadID, messageID } = event;
 
         if (!args[0]) {
-            return api.sendMessage("⚠️ Please provide a prompt.\nUsage: poli [prompt]", threadID, messageID);
+            return api.sendMessage("🔞 𝗛𝗘𝗡𝗧𝗔𝗜 -----🔞.\nUsage: hentai [prompt]", threadID, messageID);
         }
 
         const prompt = args.join(" ");
@@ -35,10 +35,10 @@ module.exports = {
             response.data.pipe(writer);
 
             writer.on("finish", () => {
-                api.setMessageReaction("✅", messageID, () => {}, true);
+                api.setMessageReaction("🔞", messageID, () => {}, true);
 
                 const msg = {
-                    body: `🖼️ Prompt: ${prompt}`,
+                    body: `🥵𝗛𝗘𝗡𝗧𝗔𝗜 𝗣𝗜𝗖𝗦🥵 ${prompt}`,
                     attachment: fs.createReadStream(filePath),
                 };
 
