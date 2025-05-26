@@ -7,6 +7,7 @@ module.exports = {
     usePrefix: false,
     usage: "removebg <reply a photo>",
     version: "1.1",
+    author:"aesther",
     admin: false,
     cooldown: 5,
     async execute({ api, event }) {
@@ -22,10 +23,10 @@ module.exports = {
         }
 
         const imageUrl = attachment.url;
-        const apiUrl = `https://kaiz-apis.gleeze.com/api/removebgv2?url=${encodeURIComponent(imageUrl)}`;
+        const apiUrl = `https://apis.davidcyriltech.my.id/removebg?url=${encodeURIComponent(imageUrl)}`;
 
         try {
-            api.sendMessage("⏳ Removing background from the image...", threadID);
+            api.sendMessage("⏳ (⁎⁍̴̀﹃ ⁍̴́⁎)", threadID);
 
             const { data } = await axios.get(apiUrl);
             if (!data || !data.response) {
@@ -43,7 +44,7 @@ module.exports = {
 
             api.sendMessage(
                 {
-                    body: "✅ Background removed!",
+                    body: "✅ ๑·̑◡･̑๑",
                     attachment: fs.createReadStream(tempPath)
                 },
                 threadID,
