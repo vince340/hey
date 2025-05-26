@@ -83,7 +83,7 @@ module.exports = {
             api.setMessageReaction("⏳", messageID, () => {}, true);
 
             // Appel à l'API waifu
-            const { data } = await axios.get(`https://votre-api.com/waifu?category=${category}`);
+            const { data } = await axios.get(`https://apis.davidcyriltech.my.id/nsfw?category=${category}`);
             
             if (!data.success || !data.url) {
                 return api.sendMessage(
