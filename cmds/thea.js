@@ -32,10 +32,10 @@ module.exports = {
         const loadingMsg = await api.sendMessage(applyFont("(⁎⁍̴̀﹃ ⁍̴́⁎)♡......"), threadID);
             
         try {
-            const apiUrl = `https://vapis.my.id/api/openai?q=${encodeURIComponent(RP + " : " + prompt)}`;
+            const apiUrl = `https://apis.davidcyriltech.my.id/ai/gpt4?text=${encodeURIComponent(RP + " : " + prompt)}`;
             
             const { data } = await axios.get(apiUrl);
-            const response = data?.result || data?.description || data?.reponse || data;
+            const response = data?.message || data?.description || data?.reponse || data;
             
             if (response) {
                 await api.unsendMessage(loadingMsg.messageID);
