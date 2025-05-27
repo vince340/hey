@@ -19,7 +19,7 @@ module.exports = {
         }
 
         const prompt = args.join(" ");
-        const apiUrl = `https://apis.davidcyriltech.my.id/flux?prompt=${encodeURIComponent(prompt)}`;
+        const apiUrl = `https://api.nekorinn.my.id/ai-img/imagen?text=${encodeURIComponent(prompt)}`;
         const filePath = path.join(__dirname, "poli-image.jpg");
 
         try {
