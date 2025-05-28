@@ -4,88 +4,101 @@ module.exports = {
     name: "loft",
     usePrefix: false,
     usage: "faire parler loft",
-    version: "2.0",
+    version: "1.2",
     author: "aesther",
     cooldown: 10,
     admin: true,
 
     shortDescription: 'Loft AI',
     longDescription: {
+        vi: 'Chat với simsimi',
         en: 'Chat with Loft AI'
     },
     category: 'chat-bot',
     guide: {
-        en: '   {pn} <message>: chat with Loft AI\n   Example: {pn} Hello'
+        vi: '   {pn} [on | off]: bật/tắt simsimi'
+            + '\n'
+            + '\n   {pn} <word>: chat nhanh với simsimi'
+            + '\n   Ví dụ:\n    {pn} hi',
+        en: '   {pn} [on | off]: Turn Loft AI on/off'
+            + '\n'
+            + '\n   {pn} <message>: Chat with Loft AI'
+            + '\n   Example:\n    {pn} Hello there'
     },
 
     langs: {
+        vi: {
+            turnedOn: 'Bật simsimi thành công!',
+            turnedOff: 'Tắt simsimi thành công!',
+            chatting: 'Đang chat với simsimi...',
+            error: 'Simsimi đang bận, bạn hãy thử lại sau'
+        },
         en: {
-            turnedOn: '✅ | Loft AI activé avec succès!',
-            turnedOff: '✅ | Loft AI désactivé avec succès!',
-            error: '😰 - THEA Vas punir si je répond à ça'
+            turnedOn: '✅ | Loft AI activated successfully!',
+            turnedOff: '✅ | Loft AI deactivated successfully!',
+            chatting: '💬 | Chatting with Loft AI...',
+            error: '😰 | Oops! Loft AI is unavailable right now. Please try again later.',
+            apiError: '⚠️ | Failed to get response from Loft AI'
         }
     },
 
-    execute: async function ({ args, message, event, getLang }) {
-        // Gestion ON/OFF
+    onStart: async function ({ args, threadsData, message, event, getLang }) {
         if (args[0] === 'on' || args[0] === 'off') {
-            const isOn = args[0] === "on";
-            global.loftAIEnabled = global.loftAIEnabled || {};
-            global.loftAIEnabled[event.threadID] = isOn;
-            
-            return message.reply(getLang(isOn ? "turnedOn" : "turnedOff"));
+            await threadsData.set(event.threadID, args[0] === "on", "settings.simsimi");
+            return message.reply(args[0] === "on" ? getLang("turnedOn") : getLang("turnedOff"));
+        }
+        
+        if (!args[0]) {
+            return message.reply(getLang("guide"));
         }
 
-        // Chat normal
-        if (args.length > 0) {
-            try {
-                const yourMessage = args.join(" ");
-                const response = await axios.post(
-                    'https://api.simsimi.vn/v1/simtalk',
-                    new URLSearchParams({
-                        'text': yourMessage,
-                        'lc': 'fr'  // Langue française
-                    }),
-                    {
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    }
-                );
-
-                if (response.data && response.data.message) {
-                    return message.reply(response.data.message);
-                } else {
-                    throw new Error("Réponse invalide de l'API");
-                }
-            } catch (err) {
-                console.error("Erreur Loft AI:", err);
-                return message.reply(getLang("error"));
-            }
-        } else {
-            return message.reply("Veuillez écrire un message après la commande. Ex: /loft Bonjour");
+        const yourMessage = args.join(" ");
+        try {
+            const responseMessage = await getMessage(yourMessage);
+            return message.reply(responseMessage);
+        } catch (err) {
+            console.error('Loft AI Error:', err);
+            return message.reply(getLang("error"));
         }
     },
 
-    onChat: async function ({ args, message, event, getLang }) {
-        if (!global.loftAIEnabled?.[event.threadID]) return;
-
-        if (args.length > 0 && !this.checkCommandPrefix(args[0])) {
+    onChat: async ({ args, message, threadsData, event, isUserCallCommand, getLang }) => {
+        if (args.length > 1 && !isUserCallCommand && await threadsData.get(event.threadID, "settings.simsimi")) {
             try {
-                const response = await axios.post(
-                    'https://api.simsimi.vn/v1/simtalk',
-                    new URLSearchParams({
-                        'text': args.join(" "),
-                        'lc': 'fr'
-                    })
-                );
-                
-                if (response.data?.message) {
-                    await message.reply(response.data.message);
-                }
+                const responseMessage = await getMessage(args.join(" "));
+                return message.reply(responseMessage);
             } catch (err) {
-                console.error("Erreur onChat Loft:", err);
+                console.error('Loft AI Chat Error:', err);
+                return message.reply(getLang("error"));
             }
         }
     }
 };
+
+async function getMessage(yourMessage) {
+    try {
+        const res = await axios.post(
+            'https://api.simsimi.vn/v1/simtalk',
+            new URLSearchParams({
+                'text': yourMessage,
+                'lc': 'fr'  // Changé en français pour correspondre à votre demande
+            }),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json'
+                },
+                timeout: 10000  // Timeout après 10 secondes
+            }
+        );
+
+        if (res.status !== 200 || !res.data.message) {
+            throw new Error('Invalid API response');
+        }
+
+        return res.data.message;
+    } catch (error) {
+        console.error('API Error:', error);
+        throw new Error('Failed to get response from Loft AI');
+    }
+}
