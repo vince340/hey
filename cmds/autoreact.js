@@ -1,39 +1,62 @@
+const emojiSets = {
+    standard: ["😀", "😍", "😂", "🔥", "❤️", "👍", "🎉", "👀", "🤔", "🙏"],
+    animals: ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🦁", "🐮"],
+    food: ["🍎", "🍕", "🍔", "🍟", "🍦", "🍩", "🍪", "🎂", "🍫", "🍿"],
+    nature: ["🌞", "🌻", "🌈", "🌊", "🍂", "❄️", "🌸", "⚡", "🌙", "🌟"]
+};
+
+const config = {
+    reactionChance: 0.7, // 70% de chance de réagir à un message
+    maxReactions: 3,      // Maximum d'emojis par message
+    cooldown: 1000,       // Délai minimal entre réactions (ms)
+    excludedThreads: []    // IDs des conversations à ignorer
+};
+
+function getRandomEmoji() {
+    const set = Object.keys(emojiSets)[Math.floor(Math.random() * Object.keys(emojiSets).length)];
+    const emojis = emojiSets[set];
+    return emojis[Math.floor(Math.random() * emojis.length)];
+}
+
 module.exports = {
     name: "randomreact",
+    author: "VotreNom",
+    version: "2.0",
+    description: "Réagit aléatoirement aux messages avec des emojis variés",
     
-    async execute({ api, event }) {
-        // Liste des réactions possibles (emojis Unicode)
-        const possibleReactions = ["❤️", "😂", "😮", "😢", "😡", "👍", "👎", "😍", "🤔", "🎉", "🤯", "👏", "🙏", "🔥", "💩", "🍆"];
+    onEvent: async ({ api, event }) => {
+        // Vérifications initiales
+        if (
+            !event.messageID || 
+            !event.threadID || 
+            event.senderID === api.getCurrentUserID() || 
+            config.excludedThreads.includes(event.threadID) ||
+            Math.random() > config.reactionChance
+        ) return;
 
         try {
-            // Vérifications strictes avant réaction
-            if (!event.messageID || 
-                !api.setMessageReaction || 
-                event.senderID === api.getCurrentUserID() || 
-                event.type !== "message") {
-                return;
-            }
-
-            // Sélection aléatoire robuste
-            const randomIndex = Math.floor(Math.random() * possibleReactions.length);
-            const randomReaction = possibleReactions[randomIndex];
-
-            // Réaction avec timeout de sécurité
-            await api.setMessageReaction(randomReaction, event.messageID, (err) => {
-                if (err) {
-                    console.error("Erreur de réaction:", {
-                        error: err,
-                        messageID: event.messageID,
-                        reaction: randomReaction
-                    });
+            const reactionCount = Math.floor(Math.random() * config.maxReactions) + 1;
+            
+            for (let i = 0; i < reactionCount; i++) {
+                await api.setMessageReaction(
+                    getRandomEmoji(),
+                    event.messageID,
+                    event.threadID,
+                    (err) => { if (err) console.error("Erreur de réaction:", err) }
+                );
+                
+                if (i < reactionCount - 1) {
+                    await new Promise(resolve => setTimeout(resolve, config.cooldown));
                 }
-            });
-
-        } catch (err) {
-            console.error("Erreur globale dans randomreact:", {
-                error: err,
-                event: event
-            });
+            }
+        } catch (error) {
+            console.error("[RANDOMREACT ERROR]", error);
         }
+    },
+    
+    // Fonction pour configurer la commande
+    config: (newConfig) => {
+        Object.assign(config, newConfig);
+        console.log("Configuration randomreact mise à jour:", config);
     }
 };
