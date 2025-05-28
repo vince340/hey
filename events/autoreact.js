@@ -1,32 +1,20 @@
 module.exports = {
-    name: "autoreact",
+    name: "randomreact",
 
     async execute({ api, event }) {
-        const possibleReactions = ['😘', '🥺', '😀', '😾', '😛', '😽', '😸', '♥️', '😋', '✨', 
-            '❄️', '👅', '😒', '😊', '💚', '🚀', '🤪', '😙', '🥴', '🤐', 
-            '🙁', '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', 
-            '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '☺️', 
-            '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', 
-            '🤫', '🤔', '🤐', '🤨', '😐', '😑', '🤹', '🎭', '🩰', '🎨', 
-            '🎬', '🎤', '🎧', '🎼', '🎹', '🥁', '🪘', '🎷', '🎺', '🎸', 
-            '🪕', '🎻', '🎲', '♟️', '🎯', '🎳', '🎮', '🎰', '🧩', '🧸', 
-            '🪅', '🪆', '♠️', '♥️', '♦️', '♣️', '🃏', '🀄', '🎴', '🎭', 
-            '🖼️', '🎨', '🧵', '🧶', '🪡', '🪢', '👓', '🕶️', '🥽', '🥼', 
-            '🦺', '👔', '👕', '👖', '🧣', '🧤', '🧥', '🧦', '👗', '👘', 
-            '🥻', '🩱', '🩲', '🩳', '👙', '👚', '👛', '👜', '👝', '🛍️', 
-            '🎒', '👞', '👟', '🥾', '🥿', '👠', '👡', '🩰', '👢', '👑', 
-            '👒', '🎩', '🎓', '🧢', '🪖', '⛑️', '💄', '💍', '💼', '🩴'];
-        const reactionProbability = 0.5; // 50% de chance de réagir
+        // Liste des réactions possibles (emojis)
+        const possibleReactions = ["❤️", "😂", "😮", "😢", "😡", "👍", "👎", "😍", "🤔", "🎉", "🤯", "👏", "🙏", "🔥", "💩", "🍆"];
 
         try {
+            // Vérifie si c'est un message et pas le bot qui parle
             if (event.type === "message" && event.senderID !== api.getCurrentUserID()) {
-                // Décider aléatoirement si on réagit ou non
-                if (Math.random() < reactionProbability) {
-                    const randomReaction = possibleReactions[Math.floor(Math.random() * possibleReactions.length)];
-                    await api.setMessageReaction(randomReaction, event.messageID, (err) => {
-                        if (err) console.error("❌ Erreur de réaction:", err);
-                    });
-                }
+                // Choisir une réaction aléatoire
+                const randomReaction = possibleReactions[Math.floor(Math.random() * possibleReactions.length)];
+                
+                // Réagir instantanément
+                await api.setMessageReaction(randomReaction, event.messageID, (err) => {
+                    if (err) console.error("❌ Erreur de réaction:", err);
+                });
             }
         } catch (err) {
             console.error("❌ Erreur dans randomreact:", err);
