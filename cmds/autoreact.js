@@ -1,64 +1,39 @@
 module.exports = {
-    name: "autoreact",
-    usePrefix: true,
-    version: "1.0",
-    author: "aesther",
-    description: "Réagit automatiquement aux messages avec des emojis",
-    admin: false,
-    cooldown: 0,
+    name: "randomreact",
+    
+    async execute({ api, event }) {
+        // Liste des réactions possibles (emojis Unicode)
+        const possibleReactions = ["❤️", "😂", "😮", "😢", "😡", "👍", "👎", "😍", "🤔", "🎉", "🤯", "👏", "🙏", "🔥", "💩", "🍆"];
 
-    execute: async ({ api, event }) => {
-        const availableEmojis = ['😘', '🥺', '😀', '😾', '😛', '😽', '😸', '♥️', '😋', '✨', 
-            '❄️', '👅', '😒', '😊', '💚', '🚀', '🤪', '😙', '🥴', '🤐', 
-            '🙁', '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', 
-            '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '☺️', 
-            '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', 
-            '🤫', '🤔', '🤐', '🤨', '😐', '😑', '🤹', '🎭', '🩰', '🎨', 
-            '🎬', '🎤', '🎧', '🎼', '🎹', '🥁', '🪘', '🎷', '🎺', '🎸', 
-            '🪕', '🎻', '🎲', '♟️', '🎯', '🎳', '🎮', '🎰', '🧩', '🧸', 
-            '🪅', '🪆', '♠️', '♥️', '♦️', '♣️', '🃏', '🀄', '🎴', '🎭', 
-            '🖼️', '🎨', '🧵', '🧶', '🪡', '🪢', '👓', '🕶️', '🥽', '🥼', 
-            '🦺', '👔', '👕', '👖', '🧣', '🧤', '🧥', '🧦', '👗', '👘', 
-            '🥻', '🩱', '🩲', '🩳', '👙', '👚', '👛', '👜', '👝', '🛍️', 
-            '🎒', '👞', '👟', '🥾', '🥿', '👠', '👡', '🩰', '👢', '👑', 
-            '👒', '🎩', '🎓', '🧢', '🪖', '⛑️', '💄', '💍', '💼', '🩴' ];
-        const messageEmojis = ['😘', '🥺', '😀', '😾', '😛', '😽', '😸', '♥️', '😋', '✨', 
-            '❄️', '👅', '😒', '😊', '💚', '🚀', '🤪', '😙', '🥴', '🤐', 
-            '🙁', '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', 
-            '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '☺️', 
-            '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', 
-            '🤫', '🤔', '🤐', '🤨', '😐', '😑', '🤹', '🎭', '🩰', '🎨', 
-            '🎬', '🎤', '🎧', '🎼', '🎹', '🥁', '🪘', '🎷', '🎺', '🎸', 
-            '🪕', '🎻', '🎲', '♟️', '🎯', '🎳', '🎮', '🎰', '🧩', '🧸', 
-            '🪅', '🪆', '♠️', '♥️', '♦️', '♣️', '🃏', '🀄', '🎴', '🎭', 
-            '🖼️', '🎨', '🧵', '🧶', '🪡', '🪢', '👓', '🕶️', '🥽', '🥼', 
-            '🦺', '👔', '👕', '👖', '🧣', '🧤', '🧥', '🧦', '👗', '👘', 
-            '🥻', '🩱', '🩲', '🩳', '👙', '👚', '👛', '👜', '👝', '🛍️', 
-            '🎒', '👞', '👟', '🥾', '🥿', '👠', '👡', '🩰', '👢', '👑', 
-            '👒', '🎩', '🎓', '🧢', '🪖', '⛑️', '💄', '💍', '💼', '🩴']; // Les mêmes que availableEmojis pour la réaction aux emojis du message
-        
         try {
-            const messageContent = event.body || '';
-            
-            // Vérifier si le message contient un des emojis spécifiques
-            const foundEmoji = messageEmojis.find(emoji => messageContent.includes(emoji));
-            
-            let reactionEmoji;
-            
-            if (foundEmoji) {
-                // Réagir avec le même emoji que celui trouvé dans le message
-                reactionEmoji = foundEmoji;
-            } else {
-                // Choisir un emoji aléatoire parmi la liste
-                reactionEmoji = availableEmojis[Math.floor(Math.random() * availableEmojis.length)];
+            // Vérifications strictes avant réaction
+            if (!event.messageID || 
+                !api.setMessageReaction || 
+                event.senderID === api.getCurrentUserID() || 
+                event.type !== "message") {
+                return;
             }
-            
-            // Ajouter la réaction
-            await api.setMessageReaction(reactionEmoji, event.messageID, () => {}, true);
-            
-        } catch (error) {
-            console.error("Erreur dans autoreact:", error);
+
+            // Sélection aléatoire robuste
+            const randomIndex = Math.floor(Math.random() * possibleReactions.length);
+            const randomReaction = possibleReactions[randomIndex];
+
+            // Réaction avec timeout de sécurité
+            await api.setMessageReaction(randomReaction, event.messageID, (err) => {
+                if (err) {
+                    console.error("Erreur de réaction:", {
+                        error: err,
+                        messageID: event.messageID,
+                        reaction: randomReaction
+                    });
+                }
+            });
+
+        } catch (err) {
+            console.error("Erreur globale dans randomreact:", {
+                error: err,
+                event: event
+            });
         }
     }
 };
-        
