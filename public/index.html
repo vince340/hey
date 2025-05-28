@@ -3,84 +3,150 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>Add Bot Account Panel</title>  
+    <title>Aesther - Bot Panel</title>  
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6067029417509870" crossorigin="anonymous"></script>  
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
     <style>  
         body {  
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
-            background: linear-gradient(135deg, #1d3557, #457b9d);  
-            color: #f1faee;  
+            font-family: 'Quicksand', sans-serif;  
+            background: linear-gradient(135deg, #f8f4ff, #eef7ff);  
+            color: #5a5a72;  
             margin: 0;  
             padding: 0;  
+            min-height: 100vh;
         }  
+        
         header {  
-            background-color: rgba(0,0,0,0.4);  
-            padding: 10px 20px;  
+            background-color: rgba(255, 255, 255, 0.8);  
+            padding: 15px 20px;  
             display: flex;  
             align-items: center;  
             justify-content: space-between;  
             position: sticky;  
             top: 0;  
             z-index: 10;  
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            backdrop-filter: blur(8px);
         }  
+        
         .logo {  
-            font-weight: bold;  
-            font-size: 20px;  
+            font-weight: 600;  
+            font-size: 24px;  
+            color: #a18cd1;
+            letter-spacing: 1px;
         }  
+        
         .hamburger {  
             font-size: 28px;  
             cursor: pointer;  
             display: block;  
             user-select: none;  
+            color: #a18cd1;
         }  
+        
         .nav-links {  
             display: none;  
             flex-direction: column;  
             position: absolute;  
             top: 60px;  
             right: 20px;  
-            background-color: rgba(0, 0, 0, 0.9);  
-            border-radius: 8px;  
+            background-color: rgba(255, 255, 255, 0.95);  
+            border-radius: 12px;  
             overflow: hidden;  
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
         }  
+        
         .nav-links a {  
-            color: #f1faee;  
-            padding: 10px 20px;  
+            color: #7a7a8c;  
+            padding: 12px 25px;  
             text-decoration: none;  
-            border-bottom: 1px solid rgba(255,255,255,0.1);  
+            border-bottom: 1px solid rgba(0,0,0,0.03);  
+            transition: all 0.3s ease;
         }  
+        
         .nav-links a:hover {  
-            background-color: #2a9d8f;  
+            background-color: #f3eeff;  
+            color: #a18cd1;
+            padding-left: 30px;
         }  
+        
         .container {  
             max-width: 700px;  
             margin: 30px auto;  
-            background-color: rgba(0, 0, 0, 0.4);  
-            padding: 30px;  
-            border-radius: 12px;  
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);  
+            background-color: rgba(255, 255, 255, 0.85);  
+            padding: 35px;  
+            border-radius: 18px;  
+            box-shadow: 0 5px 25px rgba(0,0,0,0.05);  
+            border: 1px solid rgba(0,0,0,0.03);
+            backdrop-filter: blur(5px);
         }  
+        
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin: 0 0 30px 0;
+            color: #a18cd1;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+            letter-spacing: 1px;
+        }
+        
         h2 {  
             text-align: center;  
+            color: #8e8cb1;
+            font-weight: 500;
+            margin-bottom: 25px;
         }  
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #7a7a8c;
+            font-weight: 500;
+        }
+        
         textarea, input, button {  
             width: 100%;  
             margin-bottom: 20px;  
-            padding: 10px;  
+            padding: 12px 15px;  
             border: none;  
-            border-radius: 6px;  
-            font-size: 14px;  
+            border-radius: 8px;  
+            font-size: 15px;  
+            font-family: 'Quicksand', sans-serif;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
         }  
+        
+        textarea, input {
+            background-color: rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+            color: #5a5a72;
+        }
+        
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #c4b5fd;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(196, 181, 253, 0.2);
+        }
+        
         button {  
-            background-color: #2a9d8f;  
-            color: #fff;  
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);  
+            color: white;  
             cursor: pointer;  
             font-size: 16px;  
-            transition: background-color 0.3s;  
+            font-weight: 600;
+            transition: all 0.3s ease;  
+            margin-top: 10px;
+            box-shadow: 0 2px 10px rgba(161, 140, 209, 0.3);
         }  
+        
         button:hover {  
-            background-color: #21867a;  
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(161, 140, 209, 0.4);
         }  
+        
         .mini-container {  
             display: flex;  
             flex-wrap: wrap;  
@@ -88,36 +154,68 @@
             max-height: 300px;  
             overflow-y: auto;  
             margin-bottom: 20px;  
-            border: 1px solid rgba(255,255,255,0.2);  
-            padding: 10px;  
-            border-radius: 8px;  
-            background-color: rgba(255,255,255,0.05);  
+            border: 1px solid rgba(0,0,0,0.05);  
+            padding: 15px;  
+            border-radius: 12px;  
+            background-color: rgba(0,0,0,0.02);  
         }  
+        
         .cmd-item {  
-            background-color: rgba(0,0,0,0.2);  
-            border: 1px solid rgba(255,255,255,0.1);  
-            padding: 8px 10px;  
-            border-radius: 6px;  
+            background-color: white;  
+            border: 1px solid rgba(0,0,0,0.05);  
+            padding: 8px 15px;  
+            border-radius: 8px;  
             cursor: pointer;  
             font-size: 13px;  
             user-select: none;  
-            transition: background-color 0.2s;  
+            transition: all 0.3s ease;  
+            color: #7a7a8c;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
         }  
+        
+        .cmd-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+        
         .cmd-item.selected {  
-            background-color: #2a9d8f;  
-            color: #fff;  
-            border-color: #2a9d8f;  
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);  
+            color: white;  
+            border-color: #a18cd1;  
         }  
+        
         #result {  
             margin-top: 20px;  
             text-align: center;  
-            font-weight: bold;  
+            font-weight: 600;  
+            padding: 12px;  
+            border-radius: 8px;  
         }  
+        
+        /* Custom scrollbar */
+        .mini-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        .mini-container::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.02);
+            border-radius: 10px;
+        }
+        
+        .mini-container::-webkit-scrollbar-thumb {
+            background: rgba(161, 140, 209, 0.3);
+            border-radius: 10px;
+        }
+        
+        .mini-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(161, 140, 209, 0.5);
+        }
     </style>  
 </head>  
 <body>  
 <header>  
-    <div class="logo">My Bot Panel</div>  
+    <div class="logo">Aesther</div>  
     <div class="hamburger" onclick="toggleMenu()">☰</div>  
     <div class="nav-links" id="navLinks">  
         <a href="index.html">Home</a>  
@@ -126,10 +224,11 @@
 </header>  
   
 <div class="container">  
+    <h1>Aesther</h1>
     <h2>Add New Bot Account</h2>  
   
     <label>AppState (JSON):</label>  
-    <textarea id="appState" placeholder="Paste your appState JSON here"></textarea>  
+    <textarea id="appState" placeholder="Paste your appState JSON here" rows="6"></textarea>  
   
     <label>Owner UID (optional):</label>  
     <input type="text" id="ownerUid" placeholder="Owner Facebook UID">  
@@ -147,7 +246,7 @@
         nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';  
     }  
   
-        async function loadCommands() {
+    async function loadCommands() {
         const res = await fetch('/api/available-cmds');
         const cmds = await res.json();
         const container = document.getElementById('commandContainer');
@@ -169,20 +268,349 @@
         const ownerUid = document.getElementById('ownerUid').value.trim();  
         const selectedCommands = Array.from(document.querySelectorAll('.cmd-item.selected')).map(el => el.textContent);  
   
-        if (!appStateText) return alert('Please enter your appState JSON!');  
+        if (!appStateText) {
+            document.getElementById('result').innerText = "❌ Please enter your appState JSON!";
+            document.getElementById('result').style.backgroundColor = "rgba(255, 200, 200, 0.3)";
+            return;
+        }  
+        
         let appState;  
-        try { appState = JSON.parse(appStateText); } catch { return alert('Invalid appState JSON!'); }  
+        try { 
+            appState = JSON.parse(appStateText); 
+        } catch { 
+            document.getElementById('result').innerText = "❌ Invalid appState JSON!";
+            document.getElementById('result').style.backgroundColor = "rgba(255, 200, 200, 0.3)";
+            return; 
+        }  
   
-        const response = await fetch('/api/add-bot', {  
-            method: 'POST',  
-            headers: { 'Content-Type': 'application/json' },  
-            body: JSON.stringify({ appState, ownerUid, selectedCommands })  
-        });  
+        try {
+            const response = await fetch('/api/add-bot', {  
+                method: 'POST',  
+                headers: { 'Content-Type': 'application/json' },  
+                body: JSON.stringify({ appState, ownerUid, selectedCommands })  
+            });  
+    
+            const result = await response.json();  
+            if (result.success) {
+                document.getElementById('result').innerText = `✅ Bot added successfully! Bot ID: ${result.botID}`;
+                document.getElementById('result').style.backgroundColor = "rgba(200, 255, 200, 0.3)";
+            } else {
+                document.getElementById('result').innerText = `❌ Failed: ${result.error}`;
+                document.getElementById('result').style.backgroundColor = "rgba(255, 200, 200, 0.3)";
+            }
+        } catch (error) {
+            document.getElementById('result').innerText = `❌ Network error: ${error.message}`;
+            document.getElementById('result').style.backgroundColor = "rgba(255, 200, 200, 0.3)";
+        }
+    }  
   
-        const result = await response.json();  
-        document.getElementById('result').innerText = result.success  
-            ? `✅ Bot added successfully! Bot ID: ${result.botID}`  
-            : `❌ Failed: ${result.error}`;  
+    loadCommands();  
+</script>  
+</body>  
+</html><!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Aesther - Bot Panel</title>  
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6067029417509870" crossorigin="anonymous"></script>  
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>  
+        body {  
+            font-family: 'Quicksand', sans-serif;  
+            background: linear-gradient(135deg, #f8f4ff, #eef7ff);  
+            color: #5a5a72;  
+            margin: 0;  
+            padding: 0;  
+            min-height: 100vh;
+        }  
+        
+        header {  
+            background-color: rgba(255, 255, 255, 0.8);  
+            padding: 15px 20px;  
+            display: flex;  
+            align-items: center;  
+            justify-content: space-between;  
+            position: sticky;  
+            top: 0;  
+            z-index: 10;  
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            backdrop-filter: blur(8px);
+        }  
+        
+        .logo {  
+            font-weight: 600;  
+            font-size: 24px;  
+            color: #a18cd1;
+            letter-spacing: 1px;
+        }  
+        
+        .hamburger {  
+            font-size: 28px;  
+            cursor: pointer;  
+            display: block;  
+            user-select: none;  
+            color: #a18cd1;
+        }  
+        
+        .nav-links {  
+            display: none;  
+            flex-direction: column;  
+            position: absolute;  
+            top: 60px;  
+            right: 20px;  
+            background-color: rgba(255, 255, 255, 0.95);  
+            border-radius: 12px;  
+            overflow: hidden;  
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }  
+        
+        .nav-links a {  
+            color: #7a7a8c;  
+            padding: 12px 25px;  
+            text-decoration: none;  
+            border-bottom: 1px solid rgba(0,0,0,0.03);  
+            transition: all 0.3s ease;
+        }  
+        
+        .nav-links a:hover {  
+            background-color: #f3eeff;  
+            color: #a18cd1;
+            padding-left: 30px;
+        }  
+        
+        .container {  
+            max-width: 700px;  
+            margin: 30px auto;  
+            background-color: rgba(255, 255, 255, 0.85);  
+            padding: 35px;  
+            border-radius: 18px;  
+            box-shadow: 0 5px 25px rgba(0,0,0,0.05);  
+            border: 1px solid rgba(0,0,0,0.03);
+            backdrop-filter: blur(5px);
+        }  
+        
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin: 0 0 30px 0;
+            color: #a18cd1;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+            letter-spacing: 1px;
+        }
+        
+        h2 {  
+            text-align: center;  
+            color: #8e8cb1;
+            font-weight: 500;
+            margin-bottom: 25px;
+        }  
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #7a7a8c;
+            font-weight: 500;
+        }
+        
+        textarea, input, button {  
+            width: 100%;  
+            margin-bottom: 20px;  
+            padding: 12px 15px;  
+            border: none;  
+            border-radius: 8px;  
+            font-size: 15px;  
+            font-family: 'Quicksand', sans-serif;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }  
+        
+        textarea, input {
+            background-color: rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+            color: #5a5a72;
+        }
+        
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #c4b5fd;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(196, 181, 253, 0.2);
+        }
+        
+        button {  
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);  
+            color: white;  
+            cursor: pointer;  
+            font-size: 16px;  
+            font-weight: 600;
+            transition: all 0.3s ease;  
+            margin-top: 10px;
+            box-shadow: 0 2px 10px rgba(161, 140, 209, 0.3);
+        }  
+        
+        button:hover {  
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(161, 140, 209, 0.4);
+        }  
+        
+        .mini-container {  
+            display: flex;  
+            flex-wrap: wrap;  
+            gap: 10px;  
+            max-height: 300px;  
+            overflow-y: auto;  
+            margin-bottom: 20px;  
+            border: 1px solid rgba(0,0,0,0.05);  
+            padding: 15px;  
+            border-radius: 12px;  
+            background-color: rgba(0,0,0,0.02);  
+        }  
+        
+        .cmd-item {  
+            background-color: white;  
+            border: 1px solid rgba(0,0,0,0.05);  
+            padding: 8px 15px;  
+            border-radius: 8px;  
+            cursor: pointer;  
+            font-size: 13px;  
+            user-select: none;  
+            transition: all 0.3s ease;  
+            color: #7a7a8c;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }  
+        
+        .cmd-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+        
+        .cmd-item.selected {  
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);  
+            color: white;  
+            border-color: #a18cd1;  
+        }  
+        
+        #result {  
+            margin-top: 20px;  
+            text-align: center;  
+            font-weight: 600;  
+            padding: 12px;  
+            border-radius: 8px;  
+        }  
+        
+        /* Custom scrollbar */
+        .mini-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        .mini-container::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.02);
+            border-radius: 10px;
+        }
+        
+        .mini-container::-webkit-scrollbar-thumb {
+            background: rgba(161, 140, 209, 0.3);
+            border-radius: 10px;
+        }
+        
+        .mini-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(161, 140, 209, 0.5);
+        }
+    </style>  
+</head>  
+<body>  
+<header>  
+    <div class="logo">Aesther</div>  
+    <div class="hamburger" onclick="toggleMenu()">☰</div>  
+    <div class="nav-links" id="navLinks">  
+        <a href="index.html">Home</a>  
+        <a href="apis.html">API Docs</a>  
+    </div>  
+</header>  
+  
+<div class="container">  
+    <h1>Aesther</h1>
+    <h2>Add New Bot Account</h2>  
+  
+    <label>AppState (JSON):</label>  
+    <textarea id="appState" placeholder="Paste your appState JSON here" rows="6"></textarea>  
+  
+    <label>Owner UID (optional):</label>  
+    <input type="text" id="ownerUid" placeholder="Owner Facebook UID">  
+  
+    <label>Select Commands for this bot:</label>  
+    <div class="mini-container" id="commandContainer"></div>  
+  
+    <button onclick="addBot()">Add Bot Account</button>  
+    <div id="result"></div>  
+</div>  
+  
+<script>  
+    function toggleMenu() {  
+        const nav = document.getElementById('navLinks');  
+        nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';  
+    }  
+  
+    async function loadCommands() {
+        const res = await fetch('/api/available-cmds');
+        const cmds = await res.json();
+        const container = document.getElementById('commandContainer');
+
+        cmds.forEach(cmd => {
+            if (cmd.admin === true) return; // Hide admin commands
+
+            const item = document.createElement('div');
+            item.classList.add('cmd-item');
+            item.textContent = cmd.name;
+            item.title = `Usage: ${cmd.usage}`;
+            item.addEventListener('click', () => item.classList.toggle('selected'));
+            container.appendChild(item);
+        });
+    }
+    
+    async function addBot() {  
+        const appStateText = document.getElementById('appState').value.trim();  
+        const ownerUid = document.getElementById('ownerUid').value.trim();  
+        const selectedCommands = Array.from(document.querySelectorAll('.cmd-item.selected')).map(el => el.textContent);  
+  
+        if (!appStateText) {
+            document.getElementById('result').innerText = "❌ Please enter your appState JSON!";
+            document.getElementById('result').style.backgroundColor = "rgba(255, 200, 200, 0.3)";
+            return;
+        }  
+        
+        let appState;  
+        try { 
+            appState = JSON.parse(appStateText); 
+        } catch { 
+            document.getElementById('result').innerText = "❌ Invalid appState JSON!";
+            document.getElementById('result').style.backgroundColor = "rgba(255, 200, 200, 0.3)";
+            return; 
+        }  
+  
+        try {
+            const response = await fetch('/api/add-bot', {  
+                method: 'POST',  
+                headers: { 'Content-Type': 'application/json' },  
+                body: JSON.stringify({ appState, ownerUid, selectedCommands })  
+            });  
+    
+            const result = await response.json();  
+            if (result.success) {
+                document.getElementById('result').innerText = `✅ Bot added successfully! Bot ID: ${result.botID}`;
+                document.getElementById('result').style.backgroundColor = "rgba(200, 255, 200, 0.3)";
+            } else {
+                document.getElementById('result').innerText = `❌ Failed: ${result.error}`;
+                document.getElementById('result').style.backgroundColor = "rgba(255, 200, 200, 0.3)";
+            }
+        } catch (error) {
+            document.getElementById('result').innerText = `❌ Network error: ${error.message}`;
+            document.getElementById('result').style.backgroundColor = "rgba(255, 200, 200, 0.3)";
+        }
     }  
   
     loadCommands();  
