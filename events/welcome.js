@@ -1,8 +1,12 @@
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+
 module.exports = {
     name: "event",
-    version: "3.0",
-    author: "aesther",
-    description: "Gère les événements de groupe avec messages de bienvenue/départ et vidéos d'accueil",
+    version: "3.1",
+    author: "VotreNom",
+    description: "Gestion complète des événements de groupe",
 
     async execute({ api, event }) {
         try {
@@ -18,59 +22,41 @@ module.exports = {
     }
 };
 
-// Liste des vidéos d'accueil
 const welcomeVideos = [
-    			"https://i.imgur.com/JnmXyO3.mp4",
-				"https://i.imgur.com/Qudb0Vl.mp4",
-				"https://i.imgur.com/N3wIadu.mp4",
-				"https://i.imgur.com/X7lugs3.mp4",
-				"https://i.imgur.com/6b61HGs.mp4",
-				"https://i.imgur.com/EPzjIbt.mp4",
-				"https://i.imgur.com/WWGiRvB.mp4",
-										"https://i.imgur.com/20QmmsT.mp4",
-										"https://i.imgur.com/nN28Eea.mp4",
-										"https://i.imgur.com/fknQ3Ut.mp4",
-										"https://i.imgur.com/yXZJ4A9.mp4",
-										"https://i.imgur.com/GnF9Fdw.mp4",
-										"https://i.imgur.com/B86BX8T.mp4",
-										"https://i.imgur.com/kZCBjkz.mp4",
-										"https://i.imgur.com/id5Rv7O.mp4",
-										"https://i.imgur.com/aWIyVpN.mp4",
-										"https://i.imgur.com/aFIwl8X.mp4",
-										"https://i.imgur.com/SJ60dUB.mp4",
-										"https://i.imgur.com/ySu69zS.mp4",
-										"https://i.imgur.com/mAmwCe6.mp4",
-										"https://i.imgur.com/Sbztqx2.mp4",
-										"https://i.imgur.com/s2d0BIK.mp4",
-										"https://i.imgur.com/rWRfAAZ.mp4",
-										"https://i.imgur.com/dYLBspd.mp4",
-										"https://i.imgur.com/HCv8Pfs.mp4",
-										"https://i.imgur.com/jdVLoxo.mp4",
-										"https://i.imgur.com/hX3Znez.mp4",
-										"https://i.imgur.com/cispiyh.mp4",
-										"https://i.imgur.com/ApOSepp.mp4",
-										"https://i.imgur.com/lFoNnZZ.mp4",
-										"https://i.imgur.com/qDsEv1Q.mp4",
-										"https://i.imgur.com/NjWUgW8.mp4",
-										"https://i.imgur.com/ViP4uvu.mp4",
-										"https://i.imgur.com/bim2U8C.mp4",
-										"https://i.imgur.com/YzlGSlm.mp4",
-										"https://i.imgur.com/HZpxU7h.mp4",
-										"https://i.imgur.com/exTO3J4.mp4",
-										"https://i.imgur.com/Xf6HVcA.mp4",
-										"https://i.imgur.com/9iOci5S.mp4",
-										"https://i.imgur.com/6w5tnvs.mp4",
-										"https://i.imgur.com/1L0DMtl.mp4",
-										"https://i.imgur.com/7wcQ8eW.mp4",
-										"https://i.imgur.com/3MBTpM8.mp4",
-										"https://i.imgur.com/8h1Vgum.mp4",
-										"https://i.imgur.com/CTcsUZk.mp4",
-				"https://i.imgur.com/e505Ko2.mp4",
-"https://i.imgur.com/3umJ6NL.mp4" 
+    "https://i.imgur.com/JnmXyO3.mp4",
+    "https://i.imgur.com/Qudb0Vl.mp4",
+    "https://i.imgur.com/N3wIadu.mp4",
+    "https://i.imgur.com/X7lugs3.mp4",
+    "https://i.imgur.com/6b61HGs.mp4",
+    "https://i.imgur.com/EPzjIbt.mp4",
+    "https://i.imgur.com/WWGiRvB.mp4",
+    "https://i.imgur.com/20QmmsT.mp4"
 ];
 
+async function downloadVideo(url) {
+    try {
+        const response = await axios({
+            method: 'GET',
+            url: url,
+            responseType: 'stream'
+        });
+        
+        const tempPath = path.join(__dirname, 'temp_video.mp4');
+        const writer = fs.createWriteStream(tempPath);
+        
+        response.data.pipe(writer);
+        
+        return new Promise((resolve, reject) => {
+            writer.on('finish', () => resolve(tempPath));
+            writer.on('error', reject);
+        });
+    } catch (err) {
+        console.error('Erreur de téléchargement:', err);
+        return null;
+    }
+}
+
 async function handleNewMembers({ api, event }) {
-    const threadInfo = await api.getThreadInfo(event.threadID);
     const botID = api.getCurrentUserID();
     const newUsers = event.logMessageData.addedParticipants;
 
@@ -78,49 +64,45 @@ async function handleNewMembers({ api, event }) {
         const userID = user.userFbId;
         const userName = user.fullName || "Utilisateur";
 
-        // Message pour les nouveaux membres
         if (userID !== botID) {
-            const mentions = [
-                { tag: `@${userName}`, id: userID },
-                { tag: "@Admin", id: "100066731134942" }
-            ];
-
-            const welcomeMessages = [
-                `✨ Bienvenue @${userName} dans le groupe !`,
-                `👋 Salut @${userName}, content de te voir ici !`,
-                `🌟 @${userName} a rejoint l'aventure !`
-            ];
-
-            const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
-
+            // Gestion des nouveaux membres normaux
+            const mentions = [{ tag: `@${userName}`, id: userID }];
+            const welcomeMsg = `✨ Bienvenue @${userName} dans le groupe !`;
+            
             await api.sendMessage({
-                body: randomMessage,
+                body: welcomeMsg,
                 mentions
             }, event.threadID);
-        }
-        // Comportement spécial quand c'est le bot qui est ajouté
-        else {
-            await api.changeNickname("[📑] ᗩEᔕTᕼEᖇ", event.threadID, botID);
+        } else {
+            // Comportement spécial pour le bot
+            await api.changeNickname("[🤖] BotAssistant", event.threadID, botID);
             
-            // Envoi d'un message texte
-            await api.sendMessage(
-                "Merci de m'avoir ajouté ! Je suis prêt à vous aider. Tapez /help pour voir mes commandes.", 
-                event.threadID
-            );
+            // Message texte d'introduction
+            await api.sendMessage({
+                body: "🎉 Merci de m'avoir ajouté ! Prêt à vous aider.\nTapez /help pour voir mes commandes."
+            }, event.threadID);
             
-            // Envoi aléatoire d'une vidéo d'accueil
+            // Envoi de la vidéo avec une nouvelle méthode plus fiable
             try {
                 const randomVideo = welcomeVideos[Math.floor(Math.random() * welcomeVideos.length)];
-                await api.sendMessage({
-                    attachment: await global.utils.getStreamFromURL(randomVideo),
-                    body: "🎬 𝗔𝗘𝗦𝗧𝗛𝗘𝗥 🎬\n(⁎⁍̴̀﹃ ⁍̴́⁎)♡𝗔𝗘 : https://www.facebook.com/Thea.Starliness\n(๑·`▱´·๑)𝗧𝗛𝗘𝗔 : https://www.facebook.com/thegoddess.aesther"
-                }, event.threadID);
-            } catch (videoError) {
-                console.error("Erreur d'envoi de vidéo:", videoError);
-                await api.sendMessage(
-                    "Je voulais vous envoyer une vidéo d'accueil mais ça n'a pas fonctionné 😢", 
-                    event.threadID
-                );
+                const videoPath = await downloadVideo(randomVideo);
+                
+                if (videoPath) {
+                    await api.sendMessage({
+                        attachment: fs.createReadStream(videoPath),
+                        body: "🎬 Vidéo d'accueil spéciale pour vous !"
+                    }, event.threadID);
+                    
+                    // Nettoyage du fichier temporaire
+                    fs.unlink(videoPath, (err) => {
+                        if (err) console.error('Erreur suppression vidéo:', err);
+                    });
+                } else {
+                    await api.sendMessage("Désolé, je n'ai pas pu envoyer la vidéo d'accueil 😢", event.threadID);
+                }
+            } catch (videoErr) {
+                console.error('Erreur vidéo:', videoErr);
+                await api.sendMessage("Problème technique avec la vidéo, mais je suis bien là !", event.threadID);
             }
         }
     }
@@ -132,17 +114,11 @@ async function handleLeaveMembers({ api, event }) {
     try {
         const userInfo = await api.getUserInfo(userID);
         const userName = userInfo[userID]?.name || "Un membre";
-
-        const goodbyeMessages = [
-            `😢 ${userName} nous a quittés... À bientôt !`,
-            `👋 ${userName} a quitté le groupe. Bonne continuation !`,
-            `🚪 ${userName} est parti. On espère te revoir bientôt !`
-        ];
-
-        const randomMessage = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
-        await api.sendMessage(randomMessage, event.threadID);
+        const goodbyeMsg = `👋 ${userName} a quitté le groupe. À bientôt !`;
+        
+        await api.sendMessage(goodbyeMsg, event.threadID);
     } catch (error) {
-        console.error("Erreur lors du traitement du départ:", error);
-        await api.sendMessage("Un membre a quitté le groupe.", event.threadID);
+        console.error("Erreur départ:", error);
+        await api.sendMessage("Un membre nous a quittés...", event.threadID);
     }
 }
