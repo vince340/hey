@@ -1,69 +1,109 @@
-const fs = require("fs");
-const axios = require("axios");
-const path = require("path");
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+
+// Cache system with 20-second expiry
+const imageCache = new Map();
+const CACHE_EXPIRY = 20000; // 20 seconds in milliseconds
 
 module.exports = {
     name: "gen",
-    usePrefix: false,
-    usage: "gen [prompt]",
-    version: "1.0",
-    admin: false,
-    author:"aesther", 
+    usePrefix: true,
+    usage: "Gen <texte> [ratio]",
+    version: "2.1",
+    author: "aesther",
     cooldown: 10,
 
     execute: async ({ api, event, args }) => {
         const { threadID, messageID } = event;
 
         if (!args[0]) {
-            return api.sendMessage("⚠️ 𝗣𝗥𝗢𝗠𝗣𝗧 ✖️✖️✖️.\nUsage: Gen [prompt]", threadID, messageID);
+            return api.sendMessage("ℹ️ Usage : chatgpt <texte> [ratio]\nExemple : chatgpt Naruto 16:9", threadID, messageID);
         }
 
-        const prompt = args.join(" ");
-        const apiUrl = `https://api.nekorinn.my.id/ai-img/imagen?text=${encodeURIComponent(prompt)}`;
-        const filePath = path.join(__dirname, "poli-image.jpg");
+        const availableRatios = ["1:1", "16:9", "2:3", "3:2", "4:5", "5:4", "9:16", "21:9", "9:21"];
+        let ratio = "1:1";
+
+        if (args.length > 1 && availableRatios.includes(args[args.length - 1])) {
+            ratio = args.pop();
+        }
+
+        const text = args.join(" ");
+        const cacheKey = `${text}_${ratio}`;
 
         try {
-            api.setMessageReaction("🌸", messageID, () => {}, true);
+            api.setMessageReaction("⏳", messageID, () => {}, true);
 
-            const response = await axios({
-                url: apiUrl,
-                method: "GET",
-                responseType: "stream"
+            // Generate two unique images
+            const apiUrl1 = `https://api.nekorinn.my.id/ai-img/ai4chat?text=${encodeURIComponent(text)}&ratio=${ratio}&seed=${Date.now()}`;
+            const apiUrl2 = `https://api.nekorinn.my.id/ai-img/ai4chat?text=${encodeURIComponent(text)}&ratio=${ratio}&seed=${Date.now()+1}`;
+
+            const [response1, response2] = await Promise.all([
+                axios.get(apiUrl1, { responseType: 'stream', timeout: 30000 }),
+                axios.get(apiUrl2, { responseType: 'stream', timeout: 30000 })
+            ]);
+
+            const tempPath1 = path.join(__dirname, `chatgpt_${Date.now()}_1.jpg`);
+            const tempPath2 = path.join(__dirname, `chatgpt_${Date.now()}_2.jpg`);
+
+            await Promise.all([
+                new Promise((resolve, reject) => {
+                    const writer = fs.createWriteStream(tempPath1);
+                    response1.data.pipe(writer);
+                    writer.on('finish', resolve);
+                    writer.on('error', reject);
+                }),
+                new Promise((resolve, reject) => {
+                    const writer = fs.createWriteStream(tempPath2);
+                    response2.data.pipe(writer);
+                    writer.on('finish', resolve);
+                    writer.on('error', reject);
+                })
+            ]);
+
+            // Add to cache with auto-delete timer
+            imageCache.set(cacheKey, {
+                path1: tempPath1,
+                path2: tempPath2,
+                timestamp: Date.now()
             });
 
-            const writer = fs.createWriteStream(filePath);
-            response.data.pipe(writer);
-
-            writer.on("finish", () => {
-                api.setMessageReaction("🌷", messageID, () => {}, true);
-
-                const msg = {
-                    body: `🛄 𝗣𝗥𝗢𝗠𝗣𝗧 : ${prompt}`,
-                    attachment: fs.createReadStream(filePath),
-                };
-
-                api.sendMessage(msg, threadID, (err) => {
-                    if (err) {
-                        console.error("❌ Error sending image:", err);
-                        api.sendMessage("⚠️ Failed to send image.", threadID);
+            // Set timeout to delete cache after 20 seconds
+            setTimeout(() => {
+                if (imageCache.has(cacheKey)) {
+                    try {
+                        fs.unlinkSync(imageCache.get(cacheKey).path1);
+                        fs.unlinkSync(imageCache.get(cacheKey).path2);
+                    } catch (e) {
+                        console.error("Error deleting cached files:", e);
                     }
+                    imageCache.delete(cacheKey);
+                }
+            }, CACHE_EXPIRY);
 
-                    fs.unlink(filePath, (unlinkErr) => {
-                        if (unlinkErr) console.error("❌ Error deleting file:", unlinkErr);
-                    });
-                });
-            });
+            await api.sendMessage({
+                body: `🖼️ Images générées pour "${text}"\nRatio: ${ratio}\n\n⚠️ Le cache sera vidé dans 20 secondes`,
+                attachment: [fs.createReadStream(tempPath1), fs.createReadStream(tempPath2)]
+            }, threadID);
 
-            writer.on("error", (err) => {
-                console.error("❌ Error downloading image:", err);
-                api.setMessageReaction("❌", messageID, () => {}, true);
-                api.sendMessage("⚠️ Failed to download image.", threadID, messageID);
-            });
+            api.setMessageReaction("✅", messageID, () => {}, true);
 
         } catch (error) {
-            console.error("❌ API Error:", error);
+            console.error("Erreur commande chatgpt:", error);
+            
+            if (error.response?.data?.status === false) {
+                const errorData = error.response.data;
+                let message = `❌ Erreur: ${errorData.error || "Erreur inconnue"}\n`;
+                
+                if (errorData.availableRatios) {
+                    message += `\n📐 Ratios disponibles:\n${errorData.availableRatios.join(", ")}`;
+                }
+                
+                return api.sendMessage(message, threadID, messageID);
+            }
+            
             api.setMessageReaction("❌", messageID, () => {}, true);
-            api.sendMessage("⚠️ An error occurred while generating the image.", threadID, messageID);
+            api.sendMessage("⚠️ Erreur lors de la génération des images", threadID, messageID);
         }
-    },
+    }
 };
