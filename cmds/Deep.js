@@ -5,9 +5,9 @@ const path = require("path");
 module.exports = {
     name: "Deep",
     usePrefix: false,
-    usage: "Deep prompt",
-    version: "3",
-    author: "aesther", 
+    usage: "Deep [prompt]",
+    version: "3.1",
+    author: "aesther",
     admin: false,
     cooldown: 5,
 
@@ -15,46 +15,45 @@ module.exports = {
         const { threadID, messageID } = event;
 
         if (!args[0]) {
-            return api.sendMessage("Veuillez fournir un prompt pour générer les images", threadID, messageID);
+            return api.sendMessage("❗ Veuillez fournir un prompt pour générer les images.", threadID, messageID);
         }
+
+        const prompt = args.join(" ");
+        const apiUrl = `https://api.nekorinn.my.id/ai-img/netwrck-img?text=${encodeURIComponent(prompt)}`;
 
         try {
             await api.setMessageReaction("⏳", messageID, () => {}, true);
-            const prompt = args.join(" ");
 
-            // Appel à l'API qui retourne les images
-            const apiUrl = `https://api.nekorinn.my.id/ai-img/netwrck-img?text=${encodeURIComponent(prompt)}`;
-            
-            const response = await axios.get(apiUrl, { 
+            const response = await axios.get(apiUrl, {
+                headers: { 'User-Agent': 'Mozilla/5.0' },
                 timeout: 30000,
-                validateStatus: status => status === 200
             });
-            
-            // Vérification de la réponse de l'API
-            if (!response.data?.status || !Array.isArray(response.data.result) || response.data.result.length === 0) {
+
+            const results = response.data?.result;
+
+            if (!Array.isArray(results) || results.length === 0) {
                 await api.setMessageReaction("❌", messageID, () => {}, true);
-                return api.sendMessage("⚠️ Aucune image n'a pu être générée.", threadID, messageID);
+                return api.sendMessage("⚠️ Aucune image générée. Essaie un autre prompt.", threadID, messageID);
             }
 
-            const imageUrls = response.data.result.slice(0, 10); // Limite à 10 images max
+            const imageUrls = results.slice(0, 10); // max 10 images
             const attachments = [];
-            const tempFiles = [];
+            const tempPaths = [];
 
-            // Téléchargement des images en parallèle
-            await Promise.all(imageUrls.map(async (imageUrl, i) => {
+            for (let i = 0; i < imageUrls.length; i++) {
+                const imageUrl = imageUrls[i];
+                const tempPath = path.join(__dirname, `temp_${Date.now()}_${i}.jpg`);
+                tempPaths.push(tempPath);
+
                 try {
-                    const tempPath = path.join(__dirname, `temp_img_${Date.now()}_${i}.png`);
-                    tempFiles.push(tempPath);
-                    
-                    const response = await axios({
-                        url: imageUrl,
-                        method: "GET",
+                    const imgResponse = await axios.get(imageUrl, {
                         responseType: "stream",
-                        timeout: 30000
+                        timeout: 30000,
+                        headers: { 'User-Agent': 'Mozilla/5.0' }
                     });
 
                     const writer = fs.createWriteStream(tempPath);
-                    response.data.pipe(writer);
+                    imgResponse.data.pipe(writer);
 
                     await new Promise((resolve, reject) => {
                         writer.on("finish", resolve);
@@ -62,36 +61,35 @@ module.exports = {
                     });
 
                     attachments.push(fs.createReadStream(tempPath));
-                } catch (imageError) {
-                    console.error(`Erreur avec l'image ${i}:`, imageError.message);
+                } catch (err) {
+                    console.error(`❌ Erreur de téléchargement de l'image ${i}:`, err.message);
                 }
-            }));
-
-            if (attachments.length > 0) {
-                await api.sendMessage({
-                    body: `🖼️ 𝗥𝗘𝗦𝗨𝗟𝗧𝗦 彡: "${prompt}"\n${attachments.length} image(s) générée(s)`,
-                    attachment: attachments
-                }, threadID, () => {
-                    // Nettoyage des fichiers temporaires après envoi
-                    tempFiles.forEach(file => {
-                        try {
-                            if (fs.existsSync(file)) fs.unlinkSync(file);
-                        } catch (cleanError) {
-                            console.error("Erreur de nettoyage:", cleanError.message);
-                        }
-                    });
-                });
-                
-                await api.setMessageReaction("🎉", messageID, () => {}, true);
-            } else {
-                await api.setMessageReaction("❌", messageID, () => {}, true);
-                await api.sendMessage("⚠️ Aucune image n'a pu être téléchargée.", threadID, messageID);
             }
 
-        } catch (error) {
-            console.error("❌ Erreur:", error.message);
+            if (attachments.length === 0) {
+                await api.setMessageReaction("❌", messageID, () => {}, true);
+                return api.sendMessage("⚠️ Impossible de télécharger les images.", threadID, messageID);
+            }
+
+            await api.sendMessage({
+                body: `🖼️ Résultats pour : "${prompt}"\n→ ${attachments.length} image(s) générée(s).`,
+                attachment: attachments
+            }, threadID, async () => {
+                for (const tempFile of tempPaths) {
+                    try {
+                        if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
+                    } catch (e) {
+                        console.error("Erreur de suppression de fichier :", e.message);
+                    }
+                }
+            });
+
+            await api.setMessageReaction("✅", messageID, () => {}, true);
+
+        } catch (err) {
+            console.error("Erreur principale :", err.message);
             await api.setMessageReaction("❌", messageID, () => {}, true);
-            await api.sendMessage("⚠️ Une erreur est survenue lors de la génération des images.", threadID, messageID);
+            await api.sendMessage("🚫 Une erreur est survenue lors de la génération des images.", threadID, messageID);
         }
     },
 };
