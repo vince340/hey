@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
     name: "event",
     version: "3.1",
-    author: "VotreNom",
+    author: "aesther",
     description: "Gestion complète des événements de groupe",
 
     async execute({ api, event }) {
@@ -67,7 +67,7 @@ async function handleNewMembers({ api, event }) {
         if (userID !== botID) {
             // Gestion des nouveaux membres normaux
             const mentions = [{ tag: `@${userName}`, id: userID }];
-            const welcomeMsg = `✨ Bienvenue @${userName} dans le groupe !`;
+            const welcomeMsg = `(⁎⁍̴̀﹃ ⁍̴́⁎)♡ @${userName} 𝗪𝗘𝗟𝗖𝗢𝗠𝗘 🩷`;
             
             await api.sendMessage({
                 body: welcomeMsg,
@@ -75,11 +75,11 @@ async function handleNewMembers({ api, event }) {
             }, event.threadID);
         } else {
             // Comportement spécial pour le bot
-            await api.changeNickname("[🤖] BotAssistant", event.threadID, botID);
+            await api.changeNickname("🟡𝘼𝙀𝙎𝙏𝙃𝙀𝙍🟢[๑·̑◡･̑๑]", event.threadID, botID);
             
             // Message texte d'introduction
             await api.sendMessage({
-                body: "🎉 Merci de m'avoir ajouté ! Prêt à vous aider.\nTapez /help pour voir mes commandes."
+                body: "꒰ঌ(⃔ ⌯' '⌯)⃕໒꒱........ᐕ\n\n𝗕𝗢𝗧 :🟡𝘼𝙀𝙎𝙏𝙃𝙀𝙍🟢[๑·̑◡･̑๑]\n∅ NO PREFIX BOT\n∅ ADMIN Thea\n𝗣𝗔𝗚𝗘 : https://www.facebook.com/Anime.other"
             }, event.threadID);
             
             // Envoi de la vidéo avec une nouvelle méthode plus fiable
@@ -98,11 +98,11 @@ async function handleNewMembers({ api, event }) {
                         if (err) console.error('Erreur suppression vidéo:', err);
                     });
                 } else {
-                    await api.sendMessage("Désolé, je n'ai pas pu envoyer la vidéo d'accueil 😢", event.threadID);
+                    await api.sendMessage("", event.threadID);
                 }
             } catch (videoErr) {
                 console.error('Erreur vidéo:', videoErr);
-                await api.sendMessage("Problème technique avec la vidéo, mais je suis bien là !", event.threadID);
+                await api.sendMessage("", event.threadID);
             }
         }
     }
@@ -114,7 +114,7 @@ async function handleLeaveMembers({ api, event }) {
     try {
         const userInfo = await api.getUserInfo(userID);
         const userName = userInfo[userID]?.name || "Un membre";
-        const goodbyeMsg = `👋 ${userName} a quitté le groupe. À bientôt !`;
+        const goodbyeMsg = `(;ↀ⌓ↀ) ${userName} `;
         
         await api.sendMessage(goodbyeMsg, event.threadID);
     } catch (error) {
