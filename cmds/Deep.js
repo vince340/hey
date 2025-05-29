@@ -3,67 +3,91 @@ const axios = require("axios");
 const path = require("path");
 
 module.exports = {
-    name: "deep",
+    name: "Deep",
     usePrefix: false,
-    usage: "deep [prompt]",
-    version: "1.0",
+    usage: "Deep prompt",
+    version: "3",
+    author: "aesther", 
     admin: false,
-    author:"aesther", 
-    cooldown: 10,
+    cooldown: 5,
 
     execute: async ({ api, event, args }) => {
         const { threadID, messageID } = event;
 
         if (!args[0]) {
-            return api.sendMessage("⚠️ 𝗣𝗥𝗢𝗠𝗣𝗧 ✖️✖️✖️.\nUsage: deep [prompt]", threadID, messageID);
+            return api.sendMessage("Veuillez fournir un prompt pour générer les images", threadID, messageID);
         }
 
-        const prompt = args.join(" ");
-        const apiUrl = `https://api.nekorinn.my.id/ai-img/deep-img?text=${encodeURIComponent(prompt)}`;
-        const filePath = path.join(__dirname, "poli-image.jpg");
-
         try {
-            api.setMessageReaction("🌸", messageID, () => {}, true);
+            api.setMessageReaction("⏳", messageID, () => {}, true);
 
-            const response = await axios({
-                url: apiUrl,
-                method: "GET",
-                responseType: "stream"
-            });
-
-            const writer = fs.createWriteStream(filePath);
-            response.data.pipe(writer);
-
-            writer.on("finish", () => {
-                api.setMessageReaction("🌷", messageID, () => {}, true);
-
-                const msg = {
-                    body: `🛄 𝗣𝗥𝗢𝗠𝗣𝗧 : ${prompt}`,
-                    attachment: fs.createReadStream(filePath),
-                };
-
-                api.sendMessage(msg, threadID, (err) => {
-                    if (err) {
-                        console.error("❌ Error sending image:", err);
-                        api.sendMessage("⚠️ Failed to send image.", threadID);
-                    }
-
-                    fs.unlink(filePath, (unlinkErr) => {
-                        if (unlinkErr) console.error("❌ Error deleting file:", unlinkErr);
-                    });
-                });
-            });
-
-            writer.on("error", (err) => {
-                console.error("❌ Error downloading image:", err);
+            // Appel à l'API qui retourne les images
+            const apiUrl = `https://api.nekorinn.my.id/ai-img/netwrck-img?text=${encodeURIComponent(args.join(" "))}`;
+            
+            const response = await axios.get(apiUrl, { timeout: 10000 });
+            
+            // Vérification de la réponse de l'API
+            if (!response.data || !response.data.status || !response.data.result || response.data.result.length === 0) {
                 api.setMessageReaction("❌", messageID, () => {}, true);
-                api.sendMessage("⚠️ Failed to download image.", threadID, messageID);
-            });
+                return api.sendMessage("⚠️ Aucune image n'a pu être générée.", threadID, messageID);
+            }
+
+            const imageUrls = response.data.result;
+            const attachments = [];
+
+            // Téléchargement des images
+            for (let i = 0; i < imageUrls.length; i++) {
+                try {
+                    const imageUrl = imageUrls[i];
+                    const tempPath = path.join(__dirname, `temp_img_${i}.png`);
+                    const writer = fs.createWriteStream(tempPath);
+                    
+                    const imageRes = await axios({
+                        url: imageUrl,
+                        method: "GET",
+                        responseType: "stream",
+                        timeout: 15000
+                    });
+
+                    imageRes.data.pipe(writer);
+
+                    await new Promise((resolve, reject) => {
+                        writer.on("finish", resolve);
+                        writer.on("error", reject);
+                    });
+
+                    attachments.push(fs.createReadStream(tempPath));
+                } catch (imageError) {
+                    console.error(`Erreur avec l'image ${i}:`, imageError);
+                }
+            }
+
+            if (attachments.length > 0) {
+                await api.sendMessage({
+                    body: `🖼️ 𝗥𝗘𝗦𝗨𝗟𝗧𝗦 彡: "${args.join(" ")}"\n${attachments.length} images disponibles`,
+                    attachment: attachments
+                }, threadID);
+                
+                // Nettoyage des fichiers temporaires
+                for (let i = 0; i < attachments.length; i++) {
+                    try {
+                        const tempPath = path.join(__dirname, `temp_img_${i}.png`);
+                        if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
+                    } catch (cleanError) {
+                        console.error("Erreur de nettoyage:", cleanError);
+                    }
+                }
+                
+                api.setMessageReaction("🎉", messageID, () => {}, true);
+            } else {
+                api.setMessageReaction("❌", messageID, () => {}, true);
+                api.sendMessage("⚠️ Aucune image n'a pu être téléchargée.", threadID, messageID);
+            }
 
         } catch (error) {
-            console.error("❌ API Error:", error);
+            console.error("❌ Erreur:", error);
             api.setMessageReaction("❌", messageID, () => {}, true);
-            api.sendMessage("⚠️ An error occurred while generating the image.", threadID, messageID);
+            api.sendMessage("⚠️ Une erreur est survenue lors de la génération des images.", threadID, messageID);
         }
     },
 };
