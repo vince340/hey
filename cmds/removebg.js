@@ -23,17 +23,17 @@ module.exports = {
         }
 
         const imageUrl = attachment.url;
-        const apiUrl = `https://api.diioffc.web.id/api/tools/remini?url=${encodeURIComponent(imageUrl)}`;
+        const apiUrl = `https://api.nyxs.pw/tools/removebg?url=${encodeURIComponent(imageUrl)}`;
 
         try {
             api.sendMessage("⏳ (⁎⁍̴̀﹃ ⁍̴́⁎)", threadID);
 
             const { data } = await axios.get(apiUrl);
-            if (!data || !data.response) {
+            if (!data || !data.result) {
                 return api.sendMessage("❌ Failed to get processed image from API.", threadID);
             }
 
-            const processedImageUrl = data.response;
+            const processedImageUrl = data.result;
             const imageRes = await axios.get(processedImageUrl, { responseType: "arraybuffer" });
 
             const tempDir = path.join(__dirname, "..", "temp");
