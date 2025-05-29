@@ -8,7 +8,7 @@ const CACHE_EXPIRY = 20000; // 20 seconds in milliseconds
 
 module.exports = {
     name: "gen",
-    usePrefix: true,
+    usePrefix: false,
     usage: "Gen <texte> [ratio]",
     version: "2.1",
     author: "aesther",
