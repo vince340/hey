@@ -19,37 +19,42 @@ module.exports = {
         }
 
         try {
-            api.setMessageReaction("⏳", messageID, () => {}, true);
+            await api.setMessageReaction("⏳", messageID, () => {}, true);
+            const prompt = args.join(" ");
 
             // Appel à l'API qui retourne les images
-            const apiUrl = `https://api.nekorinn.my.id/ai-img/netwrck-img?text=${encodeURIComponent(args.join(" "))}`;
+            const apiUrl = `https://api.nekorinn.my.id/ai-img/netwrck-img?text=${encodeURIComponent(prompt)}`;
             
-            const response = await axios.get(apiUrl, { timeout: 10000 });
+            const response = await axios.get(apiUrl, { 
+                timeout: 30000,
+                validateStatus: status => status === 200
+            });
             
             // Vérification de la réponse de l'API
-            if (!response.data || !response.data.status || !response.data.result || response.data.result.length === 0) {
-                api.setMessageReaction("❌", messageID, () => {}, true);
+            if (!response.data?.status || !Array.isArray(response.data.result) || response.data.result.length === 0) {
+                await api.setMessageReaction("❌", messageID, () => {}, true);
                 return api.sendMessage("⚠️ Aucune image n'a pu être générée.", threadID, messageID);
             }
 
-            const imageUrls = response.data.result;
+            const imageUrls = response.data.result.slice(0, 10); // Limite à 10 images max
             const attachments = [];
+            const tempFiles = [];
 
-            // Téléchargement des images
-            for (let i = 0; i < imageUrls.length; i++) {
+            // Téléchargement des images en parallèle
+            await Promise.all(imageUrls.map(async (imageUrl, i) => {
                 try {
-                    const imageUrl = imageUrls[i];
-                    const tempPath = path.join(__dirname, `temp_img_${i}.png`);
-                    const writer = fs.createWriteStream(tempPath);
+                    const tempPath = path.join(__dirname, `temp_img_${Date.now()}_${i}.png`);
+                    tempFiles.push(tempPath);
                     
-                    const imageRes = await axios({
+                    const response = await axios({
                         url: imageUrl,
                         method: "GET",
                         responseType: "stream",
-                        timeout: 15000
+                        timeout: 30000
                     });
 
-                    imageRes.data.pipe(writer);
+                    const writer = fs.createWriteStream(tempPath);
+                    response.data.pipe(writer);
 
                     await new Promise((resolve, reject) => {
                         writer.on("finish", resolve);
@@ -58,36 +63,35 @@ module.exports = {
 
                     attachments.push(fs.createReadStream(tempPath));
                 } catch (imageError) {
-                    console.error(`Erreur avec l'image ${i}:`, imageError);
+                    console.error(`Erreur avec l'image ${i}:`, imageError.message);
                 }
-            }
+            }));
 
             if (attachments.length > 0) {
                 await api.sendMessage({
-                    body: `🖼️ 𝗥𝗘𝗦𝗨𝗟𝗧𝗦 彡: "${args.join(" ")}"\n${attachments.length} images disponibles`,
+                    body: `🖼️ 𝗥𝗘𝗦𝗨𝗟𝗧𝗦 彡: "${prompt}"\n${attachments.length} image(s) générée(s)`,
                     attachment: attachments
-                }, threadID);
+                }, threadID, () => {
+                    // Nettoyage des fichiers temporaires après envoi
+                    tempFiles.forEach(file => {
+                        try {
+                            if (fs.existsSync(file)) fs.unlinkSync(file);
+                        } catch (cleanError) {
+                            console.error("Erreur de nettoyage:", cleanError.message);
+                        }
+                    });
+                });
                 
-                // Nettoyage des fichiers temporaires
-                for (let i = 0; i < attachments.length; i++) {
-                    try {
-                        const tempPath = path.join(__dirname, `temp_img_${i}.png`);
-                        if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
-                    } catch (cleanError) {
-                        console.error("Erreur de nettoyage:", cleanError);
-                    }
-                }
-                
-                api.setMessageReaction("🎉", messageID, () => {}, true);
+                await api.setMessageReaction("🎉", messageID, () => {}, true);
             } else {
-                api.setMessageReaction("❌", messageID, () => {}, true);
-                api.sendMessage("⚠️ Aucune image n'a pu être téléchargée.", threadID, messageID);
+                await api.setMessageReaction("❌", messageID, () => {}, true);
+                await api.sendMessage("⚠️ Aucune image n'a pu être téléchargée.", threadID, messageID);
             }
 
         } catch (error) {
-            console.error("❌ Erreur:", error);
-            api.setMessageReaction("❌", messageID, () => {}, true);
-            api.sendMessage("⚠️ Une erreur est survenue lors de la génération des images.", threadID, messageID);
+            console.error("❌ Erreur:", error.message);
+            await api.setMessageReaction("❌", messageID, () => {}, true);
+            await api.sendMessage("⚠️ Une erreur est survenue lors de la génération des images.", threadID, messageID);
         }
     },
 };
