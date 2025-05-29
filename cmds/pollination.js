@@ -19,7 +19,7 @@ module.exports = {
         }
 
         const prompt = args.join(" ");
-        const apiUrl = `https://api.nekorinn.my.id/ai-img/deep-img?text=${encodeURIComponent(prompt)}`;
+        const apiUrl = `https://api.shizo.top/ai/imagine/flux?apikey=shizo&prompt=${encodeURIComponent(prompt)}`;
         const filePath = path.join(__dirname, "poli-image.jpg");
 
         try {
