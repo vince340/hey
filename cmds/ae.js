@@ -10,13 +10,13 @@ const fonts = {
 };
 
 const stickers = [
-  "254594546003916", "254595732670464", "254593389337365",
-  "37117808696806", "254597316003639", "254598806003490",
-  "254596219337082", "2379537642070973", "2379545095403561",
-  "2379551785402892", "254597059336998"
+    "254594546003916", "254595732670464", "254593389337365",
+    "37117808696806", "254597316003639", "254598806003490",
+    "254596219337082", "2379537642070973", "2379545095403561",
+    "2379551785402892", "254597059336998"
 ];
 
-const RP = "Répond bien a cette question et ajoute des Emoji convenables";
+const RP = "Répond bien à cette question et ajoute des Emoji convenables";
 
 function applyFont(text) {
     return text.split('').map(char => fonts[char] || char).join('');
@@ -34,7 +34,7 @@ module.exports = {
     name: "ai",
     usePrefix: false,
     usage: "ai <question>",
-    version: "1.4",
+    version: "1.5",
     author: "Aesther",
     admin: false,
     cooldown: 2,
@@ -42,49 +42,79 @@ module.exports = {
     execute: async ({ api, event, args }) => {
         const { threadID, messageID } = event;
         const prompt = args.join(" ").trim();
-        
+
         if (!prompt) {
             const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
             await api.sendMessage({ sticker: randomSticker }, threadID);
             return;
         }
-        
+
         console.log(`[AI CMD] Prompt: ${prompt}`);
-        const loadingMsg = await api.sendMessage(applyFont("(⁎⁍̴̀﹃ ⁍̴́⁎)♡"), threadID);
-            
         try {
             const apiUrl = `https://apis.davidcyriltech.my.id/ai/gpt4?text=${encodeURIComponent(RP + " : " + prompt)}`;
             console.log(`[AI CMD] Calling API: ${apiUrl}`);
-            
+
             const { data } = await axios.get(apiUrl, { timeout: 15000 });
             console.log("[AI CMD] API Response:", data);
-            
+
             const response = data?.message || data?.description || data?.reponse || data;
-            
+
             if (response) {
-                await api.unsendMessage(loadingMsg.messageID);
                 const styledResponse = applyFont(response.toString());
-                
-                // Gestion des longs messages
                 const messageChunks = splitMessage(styledResponse);
-                
+                const sentMessages = [];
+
                 for (const chunk of messageChunks) {
-                    await api.sendMessage(chunk + (chunk === messageChunks[messageChunks.length - 1] ? " 🪐" : ""), threadID);
+                    await api.sendMessage(
+                        chunk + (chunk === messageChunks[messageChunks.length - 1] ? " 🪐" : ""),
+                        threadID,
+                        (err, info) => {
+                            if (!err) sentMessages.push(info.messageID);
+                        }
+                    );
                 }
-                
+
+                // Réaction
                 api.setMessageReaction("🪐", messageID, () => {}, true);
+
+                // Supprimer les messages après 1 min
+                setTimeout(() => {
+                    for (const msgID of sentMessages) {
+                        api.unsendMessage(msgID);
+                    }
+                }, 60 * 1000);
+
+                // Écoute d’une réponse (reply)
+                const listener = async function handleReply(msg) {
+                    if (
+                        msg.threadID === threadID &&
+                        msg.messageReply?.messageID === messageID
+                    ) {
+                        api.removeListener("message", handleReply);
+
+                        const newPrompt = msg.body.trim();
+                        event.body = newPrompt;
+                        await module.exports.execute({ api, event, args: newPrompt.split(" ") });
+                    }
+                };
+
+                if (typeof api.listenMqtt === "function") {
+                    api.listenMqtt(listener);
+                } else {
+                    api.listen(listener);
+                }
+
                 return;
             }
-            
+
             await api.sendMessage(applyFont("⚠️ L'API n'a pas retourné de réponse valide."), threadID);
         } catch (error) {
             console.error("[AI CMD] Erreur:", error);
-            await api.unsendMessage(loadingMsg.messageID);
-            
-            const errorMessage = error.code === 'ECONNABORTED' 
-                ? "❌ Le serveur met trop de temps à répondre. Veuillez réessayer plus tard." 
+
+            const errorMessage = error.code === 'ECONNABORTED'
+                ? "❌ Le serveur met trop de temps à répondre. Veuillez réessayer plus tard."
                 : "❌ Erreur de connexion avec l'API.";
-                
+
             await api.sendMessage(applyFont(errorMessage), threadID);
         }
     }
