@@ -18,14 +18,14 @@ module.exports = {
         let ownerUID = null;
         try {
             const appState = JSON.parse(fs.readFileSync("appState.json", "utf8"));
-            ownerUID = appState.ownerUid || "100066731134942";
+            ownerUID = appState.ownerUid || "61554245590654";
         } catch (e) {
             return api.sendMessage("❌ Failed to load the owner's UID from appState.json.", threadID);
         }
 
         const message = args.join(" ");
         if (!message) {
-            return api.sendMessage("✖️ 𝗖𝗢𝗡𝗧𝗔𝗖𝗧𝗘𝗥 𝗧𝗛𝗘𝗔 ✖️\n\n〽️ Exemple:\ncallad Salut ", threadID);
+            return api.sendMessage("✖️ 𝗖𝗢𝗡𝗧𝗔𝗖𝗧𝗘𝗥 ADMIN ✖️\n\n〽️ Exemple:\ncallad Salut ", threadID);
         }
 
         try {
