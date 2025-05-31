@@ -30,7 +30,7 @@
         }
 
         header {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: transparent;
             padding: 15px 20px;
             display: flex;
             align-items: center;
@@ -38,9 +38,9 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid rgba(255,255,255,0.5);
+            box-shadow: none;
+            backdrop-filter: none;
+            border-bottom: none;
         }
 
         .logo {
@@ -66,11 +66,11 @@
             position: absolute;
             top: 60px;
             right: 20px;
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: rgba(0, 0, 0, 0.8);
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
             z-index: 100;
         }
 
@@ -92,12 +92,12 @@
         .container {
             max-width: 700px;
             margin: 30px auto;
-            background-color: rgba(255, 255, 255, 0.85);
+            background-color: transparent;
             padding: 35px;
             border-radius: 18px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.05);
-            border: 1px solid rgba(255,255,255,0.5);
-            backdrop-filter: blur(5px);
+            box-shadow: none;
+            border: none;
+            backdrop-filter: none;
             position: relative;
             overflow: hidden;
         }
@@ -212,15 +212,15 @@
         }
 
         textarea, input {
-            background-color: rgba(0,0,0,0.03);
-            border: 1px solid rgba(0,0,0,0.05);
-            color: var(--text);
+            background-color: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
         }
 
         textarea:focus, input:focus {
             outline: none;
             border-color: var(--primary);
-            background-color: white;
+            background-color: rgba(0,0,0,0.7);
             box-shadow: 0 0 0 3px rgba(161, 140, 209, 0.2);
         }
 
@@ -272,23 +272,23 @@
             max-height: 300px;
             overflow-y: auto;
             margin-bottom: 20px;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.3);
             padding: 15px;
             border-radius: 12px;
-            background-color: rgba(0,0,0,0.02);
+            background-color: rgba(0,0,0,0.5);
         }
 
         .cmd-item {
-            background-color: white;
-            border: 1px solid rgba(0,0,0,0.05);
+            background-color: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.3);
             padding: 8px 15px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 13px;
             user-select: none;
             transition: all 0.3s ease;
-            color: #7a7a8c;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         .cmd-item:hover {
