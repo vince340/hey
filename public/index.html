@@ -14,7 +14,7 @@
             --text: #5a5a72;
             --bg: #f8f4ff;
         }
-        
+
         body {
             font-family: 'Quicksand', sans-serif;
             background: linear-gradient(135deg, var(--bg), #eef7ff), url('https://i.imgur.com/6ZYosbu.gif');
@@ -28,7 +28,7 @@
             padding: 0;
             min-height: 100vh;
         }
-        
+
         header {
             background-color: rgba(255, 255, 255, 0.8);
             padding: 15px 20px;
@@ -42,7 +42,7 @@
             backdrop-filter: blur(8px);
             border-bottom: 1px solid rgba(255,255,255,0.5);
         }
-        
+
         .logo {
             font-family: 'Orbitron', sans-serif;
             font-weight: 500;
@@ -51,7 +51,7 @@
             letter-spacing: 2px;
             text-shadow: 0 0 10px rgba(161, 140, 209, 0.3);
         }
-        
+
         .hamburger {
             font-size: 28px;
             cursor: pointer;
@@ -59,7 +59,7 @@
             user-select: none;
             color: var(--primary);
         }
-        
+
         .nav-links {
             display: none;
             flex-direction: column;
@@ -73,7 +73,7 @@
             border: 1px solid rgba(255,255,255,0.3);
             z-index: 100;
         }
-        
+
         .nav-links a {
             color: #7a7a8c;
             padding: 12px 25px;
@@ -82,13 +82,13 @@
             transition: all 0.3s ease;
             font-family: 'Quicksand', sans-serif;
         }
-        
+
         .nav-links a:hover {
             background-color: #f3eeff;
             color: var(--primary);
             padding-left: 30px;
         }
-        
+
         .container {
             max-width: 700px;
             margin: 30px auto;
@@ -101,7 +101,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .container::before {
             content: "";
             position: absolute;
@@ -113,12 +113,12 @@
             animation: rotate 20s linear infinite;
             z-index: -1;
         }
-        
+
         @keyframes rotate {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         h1 {
             text-align: center;
             font-size: 3.5rem;
@@ -131,47 +131,47 @@
             position: relative;
             transition: color 1s ease-in-out, text-shadow 1s ease-in-out;
         }
-        
+
         body.color-blue,
         body.color-blue * {
             color: #007BFF !important;
             text-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
         }
-        
+
         body.color-blue h1 {
             text-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
         }
-        
+
         body.color-red,
         body.color-red * {
             color: #DC3545 !important;
             text-shadow: 0 0 8px rgba(220, 53, 69, 0.3);
         }
-        
+
         body.color-red h1 {
             text-shadow: 0 0 15px rgba(220, 53, 69, 0.5);
         }
-        
+
         body.color-green,
         body.color-green * {
             color: #28A745 !important;
             text-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
         }
-        
+
         body.color-green h1 {
             text-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
         }
-        
+
         body.color-purple,
         body.color-purple * {
             color: #6F42C1 !important;
             text-shadow: 0 0 8px rgba(111, 66, 193, 0.3);
         }
-        
+
         body.color-purple h1 {
             text-shadow: 0 0 15px rgba(111, 66, 193, 0.5);
         }
-        
+
         h1::after {
             content: "";
             display: block;
@@ -181,7 +181,7 @@
             margin: 15px auto;
             border-radius: 3px;
         }
-        
+
         h2 {
             text-align: center;
             color: #8e8cb1;
@@ -191,14 +191,14 @@
             letter-spacing: 1px;
             font-size: 1.5rem;
         }
-        
+
         label {
             display: block;
             margin-bottom: 8px;
             color: #7a7a8c;
             font-weight: 500;
         }
-        
+
         textarea, input, button {
             width: 100%;
             margin-bottom: 20px;
@@ -210,20 +210,20 @@
             box-sizing: border-box;
             transition: all 0.3s ease;
         }
-        
+
         textarea, input {
             background-color: rgba(0,0,0,0.03);
             border: 1px solid rgba(0,0,0,0.05);
             color: var(--text);
         }
-        
+
         textarea:focus, input:focus {
             outline: none;
             border-color: var(--primary);
             background-color: white;
             box-shadow: 0 0 0 3px rgba(161, 140, 209, 0.2);
         }
-        
+
         button {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
@@ -237,12 +237,12 @@
             overflow: hidden;
             border: none;
         }
-        
+
         button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(161, 140, 209, 0.4);
         }
-        
+
         button::after {
             content: "";
             position: absolute;
@@ -259,12 +259,12 @@
             transform: rotate(30deg);
             animation: shine 3s infinite;
         }
-        
+
         @keyframes shine {
             0% { transform: translateX(-100%) rotate(30deg); }
             100% { transform: translateX(100%) rotate(30deg); }
         }
-        
+
         .mini-container {
             display: flex;
             flex-wrap: wrap;
@@ -277,7 +277,7 @@
             border-radius: 12px;
             background-color: rgba(0,0,0,0.02);
         }
-        
+
         .cmd-item {
             background-color: white;
             border: 1px solid rgba(0,0,0,0.05);
@@ -290,18 +290,18 @@
             color: #7a7a8c;
             box-shadow: 0 1px 3px rgba(0,0,0,0.03);
         }
-        
+
         .cmd-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 3px 8px rgba(0,0,0,0.08);
         }
-        
+
         .cmd-item.selected {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border-color: var(--primary);
         }
-        
+
         #result {
             margin-top: 20px;
             text-align: center;
@@ -310,7 +310,7 @@
             border-radius: 8px;
             transition: all 0.3s ease;
         }
-        
+
         /* Futuristic elements */
         .grid-lines {
             position: fixed;
@@ -325,7 +325,7 @@
             pointer-events: none;
             z-index: -1;
         }
-        
+
         .corner-decoration {
             position: absolute;
             width: 50px;
@@ -333,62 +333,62 @@
             border: 2px solid var(--primary);
             opacity: 0.3;
         }
-        
+
         .corner-tl {
             top: 10px;
             left: 10px;
             border-right: none;
             border-bottom: none;
         }
-        
+
         .corner-tr {
             top: 10px;
             right: 10px;
             border-left: none;
             border-bottom: none;
         }
-        
+
         .corner-bl {
             bottom: 10px;
             left: 10px;
             border-right: none;
             border-top: none;
         }
-        
+
         .corner-br {
             bottom: 10px;
             right: 10px;
             border-left: none;
             border-top: none;
         }
-        
+
         /* Custom scrollbar */
         .mini-container::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
-        
+
         .mini-container::-webkit-scrollbar-track {
             background: rgba(0,0,0,0.02);
             border-radius: 10px;
         }
-        
+
         .mini-container::-webkit-scrollbar-thumb {
             background: rgba(161, 140, 209, 0.3);
             border-radius: 10px;
         }
-        
+
         .mini-container::-webkit-scrollbar-thumb:hover {
             background: rgba(161, 140, 209, 0.5);
         }
-        
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .container {
                 margin: 20px 15px;
                 padding: 25px;
             }
-            
+
             h1 {
                 font-size: 2.5rem;
             }
@@ -397,7 +397,7 @@
 </head>
 <body>
     <div class="grid-lines"></div>
-    
+
     <header>
         <div class="logo">LOVELY</div>
         <div class="hamburger" onclick="toggleMenu()">☰</div>
@@ -406,48 +406,48 @@
             <a href="apis.html">API Docs</a>
         </div>
     </header>
-    
+
     <div class="container">
         <div class="corner-decoration corner-tl"></div>
         <div class="corner-decoration corner-tr"></div>
         <div class="corner-decoration corner-bl"></div>
         <div class="corner-decoration corner-br"></div>
-        
+
         <h1>LOVELY</h1>
         <h2>BOT MANAGEMENT CONSOLE</h2>
-        
+
         <label>AppState (JSON):</label>
         <textarea id="appState" placeholder="Paste your appState JSON here" rows="6"></textarea>
-        
+
         <label>Owner UID (optional):</label>
         <input type="text" id="ownerUid" placeholder="Owner Facebook UID">
-        
+
         <label>Select Commands for this bot:</label>
         <div class="mini-container" id="commandContainer"></div>
-        
+
         <button onclick="addBot()">ADD BOT ACCOUNT</button>
         <div id="result"></div>
     </div>
-    
+
     <script>
         function toggleMenu() {
             const nav = document.getElementById('navLinks');
             nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
         }
-        
+
         async function loadCommands() {
             try {
                 const res = await fetch('/api/available-cmds');
                 const cmds = await res.json();
                 const container = document.getElementById('commandContainer');
-                
+
                 if (!Array.isArray(cmds)) {
                     throw new Error('Invalid command data format');
                 }
-                
+
                 cmds.forEach(cmd => {
                     if (cmd.admin === true) return; // Hide admin commands
-                    
+
                     const item = document.createElement('div');
                     item.classList.add('cmd-item');
                     item.textContent = cmd.name;
@@ -463,19 +463,19 @@
                 container.innerHTML = `<div style="color: #ff6b6b; width: 100%; text-align: center;">Failed to load commands. Please try again later.</div>`;
             }
         }
-        
+
         async function addBot() {
             const appStateText = document.getElementById('appState').value.trim();
             const ownerUid = document.getElementById('ownerUid').value.trim();
             const selectedCommands = Array.from(document.querySelectorAll('.cmd-item.selected')).map(el => el.textContent);
             const resultElement = document.getElementById('result');
-            
+
             if (!appStateText) {
                 resultElement.innerText = "❌ Please enter your appState JSON!";
                 resultElement.style.backgroundColor = "rgba(255, 200, 200, 0.3)";
                 return;
             }
-            
+
             let appState;
             try {
                 appState = JSON.parse(appStateText);
@@ -484,51 +484,56 @@
                 resultElement.style.backgroundColor = "rgba(255, 200, 200, 0.3)";
                 return;
             }
-            
+
             try {
                 const response = await fetch('/api/add-bot', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ appState, ownerUid, selectedCommands })
                 });
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
+
                 const result = await response.json();
+
                 if (result.success) {
                     resultElement.innerText = `✅ Bot added successfully! Bot ID: ${result.botID}`;
                     resultElement.style.backgroundColor = "rgba(200, 255, 200, 0.3)";
+
+                    // Clear the form
+                    document.getElementById('appState').value = '';
+                    document.getElementById('ownerUid').value = '';
+                    document.querySelectorAll('.cmd-item.selected').forEach(el => el.classList.remove('selected'));
                 } else {
-                    resultElement.innerText = `❌ Failed: ${result.error || 'Unknown error'}`;
-                    resultElement.style.backgroundColor = "rgba(255, 200, 200, 0.3)";
+                    throw new Error(result.error || 'Unknown error occurred');
                 }
+
             } catch (error) {
                 console.error('Error adding bot:', error);
-                resultElement.innerText = `❌ Network error: ${error.message}`;
+                resultElement.innerText = `❌ Error: ${error.message}`;
                 resultElement.style.backgroundColor = "rgba(255, 200, 200, 0.3)";
             }
         }
-        
-        // Color cycling function
+
         function startColorCycling() {
             const colors = ['color-blue', 'color-red', 'color-green', 'color-purple'];
             let currentIndex = 0;
             const bodyElement = document.body;
-            
+
             setInterval(() => {
                 // Remove all color classes from body
                 colors.forEach(color => bodyElement.classList.remove(color));
-                
+
                 // Add current color class to body
                 bodyElement.classList.add(colors[currentIndex]);
-                
+
                 // Move to next color
                 currentIndex = (currentIndex + 1) % colors.length;
             }, 10000); // 10 seconds
         }
-        
+
         // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
             loadCommands();
