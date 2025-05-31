@@ -3,16 +3,16 @@ const axios = require('axios');
 const path = require('path');
 
 module.exports = {
-    name: "google",
+    name: "pin",
     usePrefix: false,
     author: "aesther",
-    usage: "𝗚𝗢𝗢𝗚𝗟𝗘 <recherche> [nombre d'images]",
+    usage: "pin <recherche> [nombre d'images]",
     description: "Récupère des images depuis l'API Pinterest de David Cyril",
     async execute({ api, event, args }) {
         const { threadID, messageID } = event;
 
         if (!args[0]) {
-            return api.sendMessage("🔍 (ex: 𝗚𝗢𝗢𝗚𝗟𝗘 chat 5)", threadID, messageID);
+            return api.sendMessage("🔍 (ex: pin chat 5)", threadID, messageID);
         }
 
         // Gestion du nombre d'images (1-20 par défaut)
