@@ -127,23 +127,39 @@
             transition: color 1s ease-in-out, text-shadow 1s ease-in-out;
         }
         
-        h1.color-blue {
-            color: #007BFF;
+        body.color-blue,
+        body.color-blue * {
+            color: #007BFF !important;
+        }
+        
+        body.color-blue h1 {
             text-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
         }
         
-        h1.color-red {
-            color: #DC3545;
+        body.color-red,
+        body.color-red * {
+            color: #DC3545 !important;
+        }
+        
+        body.color-red h1 {
             text-shadow: 0 0 15px rgba(220, 53, 69, 0.5);
         }
         
-        h1.color-green {
-            color: #28A745;
+        body.color-green,
+        body.color-green * {
+            color: #28A745 !important;
+        }
+        
+        body.color-green h1 {
             text-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
         }
         
-        h1.color-purple {
-            color: #6F42C1;
+        body.color-purple,
+        body.color-purple * {
+            color: #6F42C1 !important;
+        }
+        
+        body.color-purple h1 {
             text-shadow: 0 0 15px rgba(111, 66, 193, 0.5);
         }
         
@@ -490,14 +506,14 @@
         function startColorCycling() {
             const colors = ['color-blue', 'color-red', 'color-green', 'color-purple'];
             let currentIndex = 0;
-            const titleElement = document.querySelector('h1');
+            const bodyElement = document.body;
             
             setInterval(() => {
-                // Remove all color classes
-                colors.forEach(color => titleElement.classList.remove(color));
+                // Remove all color classes from body
+                colors.forEach(color => bodyElement.classList.remove(color));
                 
-                // Add current color class
-                titleElement.classList.add(colors[currentIndex]);
+                // Add current color class to body
+                bodyElement.classList.add(colors[currentIndex]);
                 
                 // Move to next color
                 currentIndex = (currentIndex + 1) % colors.length;
