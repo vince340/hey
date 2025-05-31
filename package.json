@@ -27,6 +27,7 @@
     "express": "^4.21.2",
     "fs": "^0.0.1-security",
     "gtts": "^0.2.1",
+    "node-cron": "^4.1.0",
     "npmlog": "^7.0.1",
     "path": "^0.12.7",
     "ruhend-scraper": "^9.0.1",
