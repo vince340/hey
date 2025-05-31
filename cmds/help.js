@@ -19,7 +19,7 @@ module.exports = {
                     .map((cmd, index) => `∅ ${cmd.name} (${cmd.usePrefix ? "uses prefix" : "no prefix"})\n   Usage: ${cmd.usage} 🌸`)
                     .join("\n\n");
 
-                const allHelpMessage = `[🔵ᗩƐᔕƬHƐᖇ-ᗷOƬ🔵]
+                const allHelpMessage = `[📥LOVELY BOT📤}
     ˚₊‧꒰ა /ᐠ - ˕ -マ໒꒱ ‧₊˚
     ━━━━━━━━━━━
     ${allCommands}
@@ -59,14 +59,14 @@ module.exports = {
             .join("\n\n");
 
         const helpMessage = `
-[🔵ᗩƐᔕƬHƐᖇ-ᗷOƬ🔵]
+[📥LOVELY BOT📤]
 ˚₊‧꒰ა /ᐠ - ˕ -マ໒꒱ ‧₊˚ 
 ━━━━━━━━━━━
 ${commandArray}
 ━━━━━━━━━━━
 📑𝗨𝘀𝗲 'help all'
 📩 𝗕𝗢𝗧 𝗟𝗜𝗡𝗞 📩
-https://the-greatest-jb0i.onrender.com/`;
+https://lovely-autobot-a2sp.onrender.com`;
 
         api.sendMessage(helpMessage, threadID, messageID);
     }
