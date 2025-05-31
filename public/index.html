@@ -172,6 +172,96 @@
             text-shadow: 0 0 15px rgba(111, 66, 193, 0.5);
         }
 
+        body.color-orange,
+        body.color-orange * {
+            color: #FF8C00 !important;
+            text-shadow: 0 0 8px rgba(255, 140, 0, 0.3);
+        }
+
+        body.color-orange h1 {
+            text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+        }
+
+        body.color-pink,
+        body.color-pink * {
+            color: #FF1493 !important;
+            text-shadow: 0 0 8px rgba(255, 20, 147, 0.3);
+        }
+
+        body.color-pink h1 {
+            text-shadow: 0 0 15px rgba(255, 20, 147, 0.5);
+        }
+
+        body.color-cyan,
+        body.color-cyan * {
+            color: #00CED1 !important;
+            text-shadow: 0 0 8px rgba(0, 206, 209, 0.3);
+        }
+
+        body.color-cyan h1 {
+            text-shadow: 0 0 15px rgba(0, 206, 209, 0.5);
+        }
+
+        body.color-yellow,
+        body.color-yellow * {
+            color: #FFD700 !important;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+        }
+
+        body.color-yellow h1 {
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        body.color-lime,
+        body.color-lime * {
+            color: #32CD32 !important;
+            text-shadow: 0 0 8px rgba(50, 205, 50, 0.3);
+        }
+
+        body.color-lime h1 {
+            text-shadow: 0 0 15px rgba(50, 205, 50, 0.5);
+        }
+
+        body.color-magenta,
+        body.color-magenta * {
+            color: #FF00FF !important;
+            text-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
+        }
+
+        body.color-magenta h1 {
+            text-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+        }
+
+        body.color-teal,
+        body.color-teal * {
+            color: #008080 !important;
+            text-shadow: 0 0 8px rgba(0, 128, 128, 0.3);
+        }
+
+        body.color-teal h1 {
+            text-shadow: 0 0 15px rgba(0, 128, 128, 0.5);
+        }
+
+        body.color-violet,
+        body.color-violet * {
+            color: #8A2BE2 !important;
+            text-shadow: 0 0 8px rgba(138, 43, 226, 0.3);
+        }
+
+        body.color-violet h1 {
+            text-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+        }
+
+        body.color-coral,
+        body.color-coral * {
+            color: #FF7F50 !important;
+            text-shadow: 0 0 8px rgba(255, 127, 80, 0.3);
+        }
+
+        body.color-coral h1 {
+            text-shadow: 0 0 15px rgba(255, 127, 80, 0.5);
+        }
+
         h1::after {
             content: "";
             display: block;
@@ -518,7 +608,11 @@
         }
 
         function startColorCycling() {
-            const colors = ['color-blue', 'color-red', 'color-green', 'color-purple'];
+            const colors = [
+                'color-blue', 'color-red', 'color-green', 'color-purple',
+                'color-orange', 'color-pink', 'color-cyan', 'color-yellow',
+                'color-lime', 'color-magenta', 'color-teal', 'color-violet', 'color-coral'
+            ];
             let currentIndex = 0;
             const bodyElement = document.body;
 
