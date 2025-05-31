@@ -124,6 +124,27 @@
             text-shadow: 0 0 15px rgba(161, 140, 209, 0.3);
             letter-spacing: 3px;
             position: relative;
+            transition: color 1s ease-in-out, text-shadow 1s ease-in-out;
+        }
+        
+        h1.color-blue {
+            color: #007BFF;
+            text-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+        }
+        
+        h1.color-red {
+            color: #DC3545;
+            text-shadow: 0 0 15px rgba(220, 53, 69, 0.5);
+        }
+        
+        h1.color-green {
+            color: #28A745;
+            text-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
+        }
+        
+        h1.color-purple {
+            color: #6F42C1;
+            text-shadow: 0 0 15px rgba(111, 66, 193, 0.5);
         }
         
         h1::after {
@@ -465,9 +486,28 @@
             }
         }
         
+        // Color cycling function
+        function startColorCycling() {
+            const colors = ['color-blue', 'color-red', 'color-green', 'color-purple'];
+            let currentIndex = 0;
+            const titleElement = document.querySelector('h1');
+            
+            setInterval(() => {
+                // Remove all color classes
+                colors.forEach(color => titleElement.classList.remove(color));
+                
+                // Add current color class
+                titleElement.classList.add(colors[currentIndex]);
+                
+                // Move to next color
+                currentIndex = (currentIndex + 1) % colors.length;
+            }, 10000); // 10 seconds
+        }
+        
         // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
             loadCommands();
+            startColorCycling();
         });
     </script>
 </body>
