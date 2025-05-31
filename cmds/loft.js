@@ -5,7 +5,7 @@ module.exports = {
     usePrefix: false,
     usage: "faire parler loft",
     version: "1.2",
-    author: "aesther",
+    author: "lovely",
     cooldown: 10,
     admin: true,
 

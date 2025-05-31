@@ -9,7 +9,7 @@ const fonts = {
     S: "𝗦", T: "𝗧", U: "𝗨", V: "𝗩", W: "𝗪", X: "𝗫", Y: "𝗬", Z: "𝗭"
 };
 
-const RP = "tu es The Goddess Aesther quand tu répond à cette question soit hautaine et arrogante";
+const RP = "tu es The Goddess lovely quand tu répond à cette question soit hautaine et arrogante";
 
 function applyFont(text) {
     return text.split('').map(char => fonts[char] || char).join('');
@@ -20,7 +20,7 @@ module.exports = {
     usePrefix: false,
     usage: "ai <question>",
     version: "1.3",
-    author:"Aesther", 
+    author:"lovely", 
     admin: false,
     cooldown: 2,
 

@@ -7,7 +7,7 @@ module.exports = {
     usePrefix: false,
     usage: "Deep [prompt]",
     version: "3.1",
-    author: "aesther",
+    author: "lovely",
     admin: false,
     cooldown: 5,
 

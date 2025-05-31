@@ -7,7 +7,7 @@ module.exports = {
     usePrefix: false,
     usage: "owner",
     version: "1.0",
-    author: "Aesther",
+    author: "lovely",
     admin: false,
     cooldown: 5,
 

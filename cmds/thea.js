@@ -20,7 +20,7 @@ module.exports = {
     usePrefix: false,
     usage: "ai <question>",
     version: "1.3",
-    author:"Aesther", 
+    author:"lovely", 
     admin: false,
     cooldown: 2,
 

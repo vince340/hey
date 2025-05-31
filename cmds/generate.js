@@ -11,7 +11,7 @@ module.exports = {
     usePrefix: false,
     usage: "Gen <texte> [ratio]",
     version: "2.1",
-    author: "aesther",
+    author: "lovely",
     cooldown: 10,
 
     execute: async ({ api, event, args }) => {
