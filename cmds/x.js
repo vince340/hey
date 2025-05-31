@@ -11,7 +11,7 @@ module.exports = {
 
     execute: async ({ api, event, args, ownerUid }) => {
         if (!ownerUid || event.senderID !== ownerUid) {
-            return api.sendMessage("❌ (๑·`▱´·๑) u aren't THEA\n\nFuck u ‼️‼️", event.threadID);
+            return api.sendMessage("❌ (๑·`▱´·๑) u aren't ADMIN‼️‼️", event.threadID);
         }
 
         const message = args.join(" ");
