@@ -3,7 +3,7 @@ const axios = require("axios");
 const path = require("path");
 
 module.exports = {
-    name: "Deep",
+    name: "flux",
     usePrefix: false,
     usage: "Deep [prompt]",
     version: "3.1",
