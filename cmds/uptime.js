@@ -5,7 +5,7 @@ const path = require("path");
 const startTime = Date.now(); // Save this at the top level for global uptime
 
 module.exports = {
-    name: "uptime",
+    name: "up",
     usePrefix: false,
     usage: "uptime",
     description: "Get the bot uptime image",
