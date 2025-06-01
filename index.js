@@ -148,6 +148,13 @@ const startBot = async (botID, botData) => {
         login({ appState: botData.appState }, (err, api) => {
             if (err) {
                 console.error(`❌ Bot ${botID} login failed:`, err.error || err);
+                
+                // Handle specific login errors
+                if (err.error === 'login-approval' || err.error === 'login-approval-needed') {
+                    console.log(`⚠️ Bot ${botID} requires login approval. Please check Facebook security settings.`);
+                } else if (err.error === 'checkpoint-required') {
+                    console.log(`⚠️ Bot ${botID} hit a security checkpoint. May need fresh AppState.`);
+                }
                 return;
             }
 
@@ -158,7 +165,27 @@ const startBot = async (botID, botData) => {
                 selectedCommands: botData.selectedCommands || []
             });
 
+            // Initialize scheduler for auto-restart and greetings
+            try {
+                scheduleTasks(botData.ownerUid, api, { autoRestart: true, autoGreet: false });
+            } catch (schedError) {
+                console.error(`❌ Failed to initialize scheduler for bot ${botID}:`, schedError);
+            }
+
             console.log(`🤖 Bot ${botID} is now online!`);
+
+            // Add keepalive mechanism to prevent timeout
+            const keepAlive = setInterval(() => {
+                api.getThreadList(1, null, ["INBOX"], (err) => {
+                    if (err) {
+                        console.error(`❌ Keepalive failed for bot ${botID}:`, err);
+                        clearInterval(keepAlive);
+                    }
+                });
+            }, 300000); // Check every 5 minutes
+
+            // Store keepalive reference
+            global.activeBots.get(botID).keepAlive = keepAlive;
 
             // ✅ Notify owner if available
             if (botData.ownerUid) {
@@ -176,7 +203,18 @@ const startBot = async (botID, botData) => {
             }
 
             api.listenMqtt(async (err, event) => {
-                if (err) return console.error(`❌ Error in bot ${botID}:`, err);
+                if (err) {
+                    console.error(`❌ Error in bot ${botID}:`, err);
+                    
+                    // Auto-restart on critical errors
+                    if (err.error === 'Connection closed.' || err.error === 'Connection lost') {
+                        console.log(`🔄 Attempting to restart bot ${botID} due to connection loss...`);
+                        setTimeout(() => {
+                            startBot(botID, botData);
+                        }, 5000); // Wait 5 seconds before restart
+                    }
+                    return;
+                }
 
                 if (global.events.has(event.type)) {
                     try {
@@ -214,6 +252,15 @@ const startBot = async (botID, botData) => {
         });
     } catch (error) {
         console.error(`❌ Bot ${botID} crashed. Removing...`, error);
+        
+        // Clean up keepalive if it exists
+        const botData = global.activeBots.get(botID);
+        if (botData && botData.keepAlive) {
+            clearInterval(botData.keepAlive);
+        }
+        
+        // Remove from active bots
+        global.activeBots.delete(botID);
     }
 };
 

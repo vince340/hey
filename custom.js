@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 
-const scheduleTasks = (ownerID, api, config = { autoRestart: false, autoGreet: true }) => {
+const scheduleTasks = (ownerID, api, config = { autoRestart: true, autoGreet: true }) => {
     console.log("✅ Auto-restart and auto-greet scheduler initialized.");
 
     // 📌 Auto-Restart at 6AM, 12PM, 6PM, 12AM
